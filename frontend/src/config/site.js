@@ -12,7 +12,7 @@ export const SITE = {
   name: env.REACT_APP_COMPANY_NAME || 'Vigilant Fintech',
   tagline: 'Your Business. Our Support. Shared Success.',
   url: (env.REACT_APP_SITE_URL || 'https://www.vigilantfintech.com').replace(/\/$/, ''),
-  email: env.REACT_APP_CONTACT_EMAIL || 'vigilantfintech@gmail.com',
+  email: env.REACT_APP_CONTACT_EMAIL || 'info@vigilantfintech.com',
   phone: (env.REACT_APP_CONTACT_PHONE || '7597703903').replace(/\D/g, ''),
   phoneDisplay: '+91 7597703903',
   whatsapp: (env.REACT_APP_WHATSAPP_NUMBER || '917597703903').replace(/\D/g, ''), // +91 7597703903

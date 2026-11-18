@@ -3,7 +3,7 @@ import { gsap, ScrollTrigger, REDUCED } from '../lib/smooth';
 import { splitTextNodes } from '../lib/motion';
 import { sceneState } from '../three/sceneState';
 import { Button, ConsultButton } from '../components/ui';
-import { HERO, TRUST, WHY } from '../content/copy';
+import { HERO, WHY } from '../content/copy';
 import { SERVICES } from '../content/services';
 
 const CHAPTERS = 5;
@@ -99,7 +99,6 @@ export default function Hero() {
             <p className="eyebrow fc__fade"><i />Sound familiar?</p>
             <h2 className="hh" data-fsplit style={{ visibility: 'hidden' }}>Running a business requires time, attention and the right people.</h2>
             <p className="lead fc__fade">Managing everything yourself can slow down your growth.</p>
-            <p className="fc__m fc__para fc__fade">{TRUST.paragraphs[1]}</p>
           </div>
         </div>
 
@@ -108,8 +107,11 @@ export default function Hero() {
             <p className="eyebrow fc__fade"><i />Meet the team</p>
             <h2 className="hh" data-fsplit style={{ visibility: 'hidden' }}>More Than Virtual Assistance. A Complete Business Support Team.</h2>
             <ul className="fc__m fc__pts fc__fade">
-              {[WHY.items[0], WHY.items[2], WHY.items[4]].map(([t, d]) => (
-                <li key={t}><b>{t}</b><span>{d}</span></li>
+              {[WHY.items[0], WHY.items[2], WHY.items[4]].map(([t]) => (
+                <li key={t}>
+                  <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></i>
+                  {t}
+                </li>
               ))}
             </ul>
           </div>
@@ -120,7 +122,7 @@ export default function Hero() {
             <p className="eyebrow fc__fade"><i />One company</p>
             <h2 className="hh" data-fsplit style={{ visibility: 'hidden' }}>One team. Multiple skills. Endless possibilities.</h2>
             <ul className="fc__m fc__pills fc__fade">
-              {SERVICES.map((s) => <li key={s.slug}>{s.short}</li>)}
+              {SERVICES.map((s) => <li key={s.slug}><b>{s.n}</b>{s.short}</li>)}
             </ul>
           </div>
         </div>

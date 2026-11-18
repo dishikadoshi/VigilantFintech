@@ -1184,7 +1184,7 @@ select option { color: var(--navy-d); }
 
 /* ═══ v4.6 · mobile only: tidy bottom dock for the floating buttons (desktop untouched) ═══ */
 @media (max-width: 899px) {
-  .fabs { flex-direction: row-reverse; gap: 10px; right: 14px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
+  .fabs { flex-direction: row-reverse; gap: 10px; right: 14px; bottom: calc(6px + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
   .fab { width: 42px; height: 42px; }
   .fab svg { width: 21px; height: 21px; }
 }
@@ -1239,11 +1239,11 @@ select option { color: var(--navy-d); }
   .how__left .lead { margin-top: .5rem; font-size: clamp(.76rem, 1.8svh, .86rem); line-height: 1.5; max-width: none; }
 
   /* plate stack (same 3D fan as desktop, smaller, centred) */
-  .how .hstack { display: block; flex: 1 1 auto; height: auto; min-height: 150px; max-height: 260px; margin-top: .3rem; }
-  .how .hstack .hplate { width: 70%; height: clamp(70px, 11svh, 92px); margin: calc(clamp(70px, 11svh, 92px) / -2) 0 0 -35%; padding: .55rem .85rem; border-radius: 14px; }
-  .how .hstack .hplate small { font-size: .55rem; }
-  .how .hstack .hplate b { font-size: .98rem; }
-  .how .hstack .hplate.is-on { translate: 0 0 16px; }
+  .how .hstack { display: block; flex: 1 1 0; height: auto; min-height: 190px; max-height: none; margin-top: .3rem; }
+  .how .hstack .hplate { width: 72%; height: clamp(86px, 13.5svh, 122px); margin: calc(clamp(86px, 13.5svh, 122px) / -2) 0 0 -36%; padding: .6rem .9rem; border-radius: 16px; }
+  .how .hstack .hplate small { font-size: .58rem; }
+  .how .hstack .hplate b { font-size: 1.05rem; }
+  .how .hstack .hplate.is-on { translate: 0 0 18px; }
 
   /* stepper: five nodes on a line that fills with scroll; the active step's text sits below */
   .how .hsteps { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: auto auto; row-gap: .8rem; margin: 0; flex: none; }
@@ -1288,7 +1288,7 @@ select option { color: var(--navy-d); }
   .ind .ipan__ghost { font-size: 8rem; bottom: -2rem; }
 
   /* counter + progress bar bottom-left, "01 / 07 ─────", clear of the floating buttons */
-  .ind .ind__foot { display: flex; position: absolute; left: 0; right: 0; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); height: 42px; gap: .8rem; padding-left: var(--gut); padding-right: 108px; }
+  .ind .ind__foot { display: flex; position: absolute; left: 0; right: 0; bottom: calc(6px + env(safe-area-inset-bottom, 0px)); height: 42px; gap: .8rem; padding-left: var(--gut); padding-right: 108px; }
   .ind .ind__hint { display: none; }
 }
 @media (max-width: 899px) and (max-height: 800px) { .ind .ind__head .lead { display: none; } }

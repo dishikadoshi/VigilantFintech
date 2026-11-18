@@ -36,6 +36,29 @@ export const CAL = {
 
 export const API_BASE = (env.REACT_APP_API_URL || 'http://localhost:4000').replace(/\/api\/?$/, '');
 
+// ── Contact link helpers ─────────────────────────────────────────
+// Phone in international format, e.g. +917597703903
+export const phoneE164 = () => (SITE.phone ? `+${SITE.phone.length === 10 ? '91' : ''}${SITE.phone}` : '');
+export const telHref = () => (SITE.phone ? `tel:${phoneE164()}` : '');
+
+const enc = encodeURIComponent;
+const qs = (o) => Object.entries(o).filter(([, v]) => v).map(([k, v]) => `${k}=${enc(v)}`).join('&');
+
+// mailto: opens the visitor's default mail app (phones, Outlook, Apple Mail…)
+export const mailtoHref = ({ subject, body } = {}) =>
+  SITE.email ? `mailto:${SITE.email}${subject || body ? `?${qs({ subject, body })}` : ''}` : '';
+
+// Gmail compose — opens in the browser for anyone signed in to Gmail
+export const gmailHref = ({ subject, body } = {}) =>
+  SITE.email ? `https://mail.google.com/mail/?${qs({ view: 'cm', fs: '1', to: SITE.email, su: subject, body })}` : '';
+
+export const isMobileDevice = () => {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  return /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(ua) ||
+    (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1); // iPadOS reports as a Mac
+};
+
 export const whatsappHref = (text = 'Hello! I would like to discuss my business support requirements.') =>
   SITE.whatsapp ? `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}` : '';
 

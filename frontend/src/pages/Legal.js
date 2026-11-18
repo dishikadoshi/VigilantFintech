@@ -3,6 +3,7 @@ import React from 'react';
 import { Page, PageHero } from '../components/ui';
 import { PRIVACY, TERMS, COOKIES, UPDATED } from '../content/legal';
 import { getLenis } from '../lib/smooth';
+import { linkifyContact } from '../components/ContactLinks';
 
 const slugify = (value) => value
   .toLowerCase()
@@ -112,13 +113,13 @@ function Legal({
                   </h2>
 
                   {(s.p || []).map((t) => (
-                    <p key={t}>{t}</p>
+                    <p key={t}>{linkifyContact(t)}</p>
                   ))}
 
                   {s.ul && (
                     <ul>
                       {s.ul.map((t) => (
-                        <li key={t}>{t}</li>
+                        <li key={t}>{linkifyContact(t)}</li>
                       ))}
                     </ul>
                   )}

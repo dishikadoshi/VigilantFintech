@@ -1,211 +1,181 @@
 /**
  * adminEmailTemplate.js
  * ──────────────────────
- * Rich HTML email sent to the Vigilant Fintech admin inbox
- * whenever a new contact form is submitted.
- * Designed to match the Vigilant Fintech brand (navy + gold).
+ * HTML email sent to the Vigilant Fintech inbox whenever a new contact
+ * form is submitted. Uses the real logo + the website's navy/teal theme.
+ *
+ * Every value that came from the form is HTML-escaped (esc) so a visitor
+ * can't inject links or markup into your inbox.
  */
 
+const {
+  BRAND, C, FONT, esc, mailtoHref,
+  emailLinks, phoneLink, siteLink, button, formatDate, shell,
+} = require('./emailShared');
+
 function adminEmailTemplate(record) {
-  const subject = `🔔 New Audit Enquiry — ${record.firstName} ${record.lastName} from ${record.company} [${record.id}]`;
+  const firstName = (record.firstName || '').trim();
+  const fullName  = `${firstName} ${record.lastName || ''}`.trim() || record.email;
+  const company   = (record.company || '').trim();
+  const reason    = (record.reason || '').trim() || 'General enquiry';
+  const when      = formatDate(record.timestamp, true);
 
-  const reasonBadgeColor = {
-    'Free cost audit'       : '#2045a0',
-    'Vendor renegotiation'  : '#c4870a',
-    'SaaS optimization'     : '#122158',
-    'Energy & utilities'    : '#16a34a',
-    'General enquiry'       : '#6b7280',
-  }[record.reason] || '#2045a0';
+  const subject = `🔔 New Enquiry — ${fullName}${company ? ` from ${company}` : ''} [${record.id}]`;
 
-  const html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>New Enquiry — ${record.firstName} ${record.lastName}</title>
-</head>
-<body style="margin:0;padding:0;background:#f0f2f7;font-family:'Segoe UI',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+  // Pre-filled reply (same content for the mailto + Gmail buttons)
+  const reply = {
+    subject: `Re: Your Vigilant Fintech Enquiry [${record.id}]`,
+    body   : `Hi ${firstName || 'there'},\n\nThank you for contacting Vigilant Fintech.\n\n`,
+  };
 
-<!-- Wrapper -->
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation"
-       style="background:#f0f2f7;padding:40px 16px;">
-  <tr><td align="center">
+  // One-click Google Calendar event with the lead already added as a guest
+  const calendarHref = 'https://calendar.google.com/calendar/render?' + [
+    ['action', 'TEMPLATE'],
+    ['text',   `Call with ${fullName}${company ? ` (${company})` : ''}`],
+    ['details', `Enquiry ${record.id}\nService: ${reason}\nPhone: ${record.phone || 'not provided'}`],
+    ['add',    record.email],
+  ].map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
 
-    <!-- Card -->
-    <table width="600" cellpadding="0" cellspacing="0" role="presentation"
-           style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;
-                  overflow:hidden;box-shadow:0 8px 40px rgba(13,27,62,.12);">
-
-      <!-- Header -->
+  const hero = `
       <tr>
-        <td style="background:linear-gradient(135deg,#050e24 0%,#0d1b3e 60%,#122158 100%);
-                   padding:36px 40px;">
+        <td bgcolor="${C.navy}" class="px"
+            style="background-color:${C.navy};background-image:linear-gradient(135deg,${C.navyD} 0%,${C.navy} 60%,${C.navy2} 100%);
+                   padding:34px 40px 32px;">
           <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
-              <td>
-                <div style="display:inline-block;background:rgba(255,255,255,.1);
-                            border-radius:10px;padding:8px 14px;margin-bottom:20px;">
-                  <span style="color:#e8a020;font-size:11px;font-weight:700;
-                               letter-spacing:.14em;text-transform:uppercase;">
-                    Vigilant Fintech · Cost Intelligence
-                  </span>
-                </div>
-                <h1 style="margin:0 0 8px;color:#ffffff;font-size:26px;
-                           font-weight:700;letter-spacing:-.02em;line-height:1.2;">
-                  New Audit Enquiry
+              <td class="stack" style="vertical-align:top;">
+                <span style="display:inline-block;color:${C.teal};font-family:${FONT};font-size:11px;font-weight:700;
+                             letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;">
+                  New website enquiry
+                </span>
+                <h1 class="h1" style="margin:0 0 8px;color:#ffffff;font-family:${FONT};font-size:28px;font-weight:700;
+                                      letter-spacing:-.02em;line-height:1.2;">
+                  ${esc(fullName)}
                 </h1>
-                <p style="margin:0;color:rgba(255,255,255,.55);font-size:14px;
-                          font-weight:300;line-height:1.6;">
-                  Submitted ${new Date(record.timestamp).toLocaleString('en-US', {
-                    weekday:'long', year:'numeric', month:'long', day:'numeric',
-                    hour:'2-digit', minute:'2-digit', timeZoneName:'short'
-                  })}
+                <p style="margin:0;color:rgba(255,255,255,.65);font-family:${FONT};font-size:14px;line-height:1.6;">
+                  Submitted ${esc(when)}
                 </p>
               </td>
-              <td align="right" style="vertical-align:top;padding-top:4px;">
-                <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-                            border-radius:8px;padding:10px 16px;text-align:center;">
-                  <span style="color:rgba(255,255,255,.4);font-size:10px;font-weight:600;
-                               letter-spacing:.1em;text-transform:uppercase;display:block;
-                               margin-bottom:4px;">Ref ID</span>
-                  <span style="color:#e8a020;font-size:13px;font-weight:700;
-                               font-family:'Courier New',monospace;">${record.id}</span>
-                </div>
+              <td class="stack stack-gap" align="right" style="vertical-align:top;">
+                <table cellpadding="0" cellspacing="0" role="presentation"
+                       style="background-color:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;">
+                  <tr><td style="padding:10px 16px;text-align:center;">
+                    <span style="display:block;color:rgba(255,255,255,.55);font-family:${FONT};font-size:10px;font-weight:700;
+                                 letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;">Ref ID</span>
+                    <span style="color:${C.teal};font-size:14px;font-weight:700;font-family:'Courier New',monospace;white-space:nowrap;">${esc(record.id)}</span>
+                  </td></tr>
+                </table>
               </td>
             </tr>
           </table>
         </td>
-      </tr>
+      </tr>`;
 
-      <!-- Reason badge -->
+  const body = `
+      <!-- Service requested -->
       <tr>
-        <td style="padding:0 40px;">
-          <div style="margin-top:-1px;padding:14px 0;border-bottom:1px solid #e2e6ef;">
-            <span style="background:${reasonBadgeColor};color:#fff;
-                         border-radius:100px;padding:5px 14px;font-size:12px;
-                         font-weight:700;letter-spacing:.06em;">
-              ${record.reason || 'Not specified'}
-            </span>
-          </div>
+        <td class="px" style="padding:22px 40px 0;">
+          <span style="font-family:${FONT};color:${C.muted};font-size:11px;font-weight:700;letter-spacing:.12em;
+                       text-transform:uppercase;">Service requested</span><br/>
+          <span style="display:inline-block;margin-top:8px;background-color:${C.tealL};color:#0b6b5e;border:1px solid ${C.teal};
+                       border-radius:100px;padding:6px 16px;font-family:${FONT};font-size:13px;font-weight:700;">
+            ${esc(reason)}
+          </span>
         </td>
       </tr>
 
       <!-- Contact details -->
       <tr>
-        <td style="padding:32px 40px 0;">
-          <h2 style="margin:0 0 20px;color:#0d1b3e;font-size:14px;font-weight:700;
-                     letter-spacing:.12em;text-transform:uppercase;">
-            Contact Details
-          </h2>
+        <td class="px" style="padding:30px 40px 0;">
+          <h2 style="margin:0 0 18px;color:${C.navyD};font-family:${FONT};font-size:13px;font-weight:700;
+                     letter-spacing:.12em;text-transform:uppercase;">Contact Details</h2>
           <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-            ${detailRow('👤', 'Full Name',  `${record.firstName} ${record.lastName}`)}
-            ${detailRow('🏢', 'Company',    record.company)}
-            ${detailRow('✉️', 'Email',      `<a href="mailto:${record.email}" style="color:#2045a0;text-decoration:none;font-weight:600;">${record.email}</a>`)}
-            ${detailRow('📞', 'Phone',      record.phone || '<span style="color:#b0b9d0;">Not provided</span>')}
-            ${detailRow('💬', 'SMS Opt-in', record.smsConsent ? '<span style="color:#16a34a;">Yes</span>' : 'No')}
+            ${detailRow('Full name', esc(fullName))}
+            ${detailRow('Company',   esc(company) || notProvided())}
+            ${detailRow('Email',     emailLinks(record.email, reply))}
+            ${detailRow('Phone',     record.phone ? phoneLink(record.phone) : notProvided())}
+            ${detailRow('SMS opt-in', record.smsConsent ? `<span style="color:${C.tealD};font-weight:700;">Yes</span>` : 'No')}
           </table>
         </td>
       </tr>
 
       <!-- Message -->
       <tr>
-        <td style="padding:28px 40px 0;">
-          <h2 style="margin:0 0 12px;color:#0d1b3e;font-size:14px;font-weight:700;
-                     letter-spacing:.12em;text-transform:uppercase;">
-            Message
-          </h2>
-          <div style="background:#f0f2f7;border-left:3px solid #c4870a;border-radius:0 8px 8px 0;
-                      padding:18px 20px;">
-            <p style="margin:0;color:#374269;font-size:15px;line-height:1.75;font-weight:300;">
+        <td class="px" style="padding:14px 40px 0;">
+          <h2 style="margin:0 0 12px;color:${C.navyD};font-family:${FONT};font-size:13px;font-weight:700;
+                     letter-spacing:.12em;text-transform:uppercase;">Message</h2>
+          <div style="background-color:${C.bg};border-left:4px solid ${C.teal};border-radius:0 10px 10px 0;padding:18px 20px;">
+            <p style="margin:0;color:${C.body};font-family:${FONT};font-size:15px;line-height:1.75;">
               ${record.message
-                ? record.message.replace(/\n/g, '<br/>')
-                : '<em style="color:#b0b9d0;">No message provided.</em>'}
+                ? esc(record.message).replace(/\r?\n/g, '<br/>')
+                : `<em style="color:${C.muted};">No message provided.</em>`}
             </p>
           </div>
         </td>
       </tr>
 
-      <!-- Action buttons -->
+      <!-- Actions -->
       <tr>
-        <td style="padding:32px 40px;">
-          <table cellpadding="0" cellspacing="0" role="presentation">
-            <tr>
-              <td style="padding-right:12px;">
-                <a href="mailto:${record.email}?subject=Re: Your Vigilant Fintech Audit Enquiry [${record.id}]"
-                   style="display:inline-block;background:#0d1b3e;color:#ffffff;
-                          font-size:14px;font-weight:600;padding:12px 24px;
-                          border-radius:10px;text-decoration:none;letter-spacing:-.01em;">
-                  Reply to ${record.firstName} →
-                </a>
-              </td>
-              <td>
-                <a href="https://calendar.google.com"
-                   style="display:inline-block;background:transparent;color:#0d1b3e;
-                          font-size:14px;font-weight:600;padding:11px 24px;
-                          border-radius:10px;text-decoration:none;letter-spacing:-.01em;
-                          border:1.5px solid #c8d0e4;">
-                  Schedule Call
-                </a>
-              </td>
-            </tr>
-          </table>
+        <td class="px" style="padding:30px 40px 20px;">
+          ${button(mailtoHref(record.email, reply), `Reply to ${firstName || 'sender'} →`, 'navy')}
+          ${button(calendarHref,                    'Schedule Call', 'ghost')}
         </td>
-      </tr>
+      </tr>`;
 
-      <!-- Footer -->
+  const footer = `
       <tr>
-        <td style="background:#f0f2f7;padding:24px 40px;border-top:1px solid #e2e6ef;">
-          <p style="margin:0;color:#7a86a8;font-size:12px;line-height:1.6;font-weight:300;">
-            This is an automated notification from the Vigilant Fintech website contact form.<br/>
-            Submitted via <strong style="color:#374269;">vigilantfintech.com</strong> · 
-            Source: <strong style="color:#374269;">${record.source}</strong>
+        <td class="px" bgcolor="${C.bg}" style="background-color:${C.bg};padding:22px 40px;border-top:1px solid ${C.line};">
+          <p style="margin:0;color:${C.muted};font-family:${FONT};font-size:12px;line-height:1.7;">
+            Automated notification from the ${esc(BRAND.name)} website contact form.<br/>
+            Submitted via ${siteLink()}${record.source ? ` · Source: <strong style="color:${C.body};">${esc(record.source)}</strong>` : ''}<br/>
+            ${esc(BRAND.name)} · <a href="${esc(mailtoHref(BRAND.email))}" style="color:${C.navy2};text-decoration:underline;">${esc(BRAND.email)}</a>
+            · ${phoneLink(BRAND.phoneDisplay, BRAND.phone)}
           </p>
         </td>
-      </tr>
+      </tr>`;
 
-    </table>
-    <!-- /Card -->
-
-  </td></tr>
-</table>
-
-</body>
-</html>`;
+  const html = shell({
+    title: `New enquiry — ${fullName}`,
+    preheader: `${fullName}${company ? ` (${company})` : ''} · ${reason}`,
+    hero, body, footer,
+  });
 
   const text = `
-NEW AUDIT ENQUIRY [${record.id}]
+NEW ENQUIRY [${record.id}]
 ================================
-Submitted: ${record.timestamp}
+Submitted : ${formatDate(record.timestamp)}
 
-Name    : ${record.firstName} ${record.lastName}
-Company : ${record.company}
-Email   : ${record.email}
-Phone   : ${record.phone || 'Not provided'}
+Name      : ${fullName}
+Company   : ${company || 'Not provided'}
+Email     : ${record.email}
+Phone     : ${record.phone || 'Not provided'}
 SMS Opt-in: ${record.smsConsent ? 'Yes' : 'No'}
-Reason  : ${record.reason}
+Service   : ${reason}
 
 Message:
 ${record.message || 'No message provided.'}
+
+Reply            : ${mailtoHref(record.email, reply)}
+Schedule a call  : ${calendarHref}
+
+Website: ${BRAND.siteUrl}
 `.trim();
 
   return { subject, html, text };
 }
 
-function detailRow(icon, label, value) {
+const notProvided = () => `<span style="color:#9aa8bb;">Not provided</span>`;
+
+function detailRow(label, value) {
   return `
-    <tr>
-      <td style="padding:0 0 14px;width:32px;vertical-align:top;">
-        <span style="font-size:16px;">${icon}</span>
-      </td>
-      <td style="padding:0 0 14px;width:100px;vertical-align:top;">
-        <span style="color:#7a86a8;font-size:12px;font-weight:600;
-                     letter-spacing:.08em;text-transform:uppercase;">${label}</span>
-      </td>
-      <td style="padding:0 0 14px;vertical-align:top;">
-        <span style="color:#0d1b3e;font-size:15px;font-weight:500;">${value}</span>
-      </td>
-    </tr>`;
+            <tr>
+              <td style="padding:0 0 16px;width:104px;vertical-align:top;">
+                <span style="color:${C.muted};font-family:${FONT};font-size:12px;font-weight:700;letter-spacing:.08em;
+                             text-transform:uppercase;line-height:22px;">${label}</span>
+              </td>
+              <td style="padding:0 0 16px;vertical-align:top;font-family:${FONT};font-size:15px;font-weight:500;
+                         color:${C.navyD};line-height:22px;">${value}</td>
+            </tr>`;
 }
 
 module.exports = { adminEmailTemplate };

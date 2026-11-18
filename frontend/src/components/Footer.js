@@ -4,6 +4,7 @@ import { gsap, REDUCED, scrollToTop } from '../lib/smooth';
 import Logo from './Logo';
 import { Button, WhatsAppLabel } from './ui';
 import { SITE, whatsappHref, NAV, CONSULT_TO } from '../config/site';
+import { EmailLink, PhoneLink } from './ContactLinks';
 import { SERVICES } from '../content/services';
 import { FOOTER } from '../content/copy';
 
@@ -119,8 +120,8 @@ export default function Footer() {
         </div>
 
         <ul className="foot__pills">
-          {SITE.email && <li className="fpill"><a href={`mailto:${SITE.email}`}><Ic d={ICON.mail} /><span>{SITE.email}</span></a></li>}
-          {SITE.phone && <li className="fpill"><a href={`tel:+91${SITE.phone}`}><Ic d={ICON.phone} /><span>{SITE.phoneDisplay}</span></a></li>}
+          {SITE.email && <li className="fpill"><EmailLink><Ic d={ICON.mail} /><span>{SITE.email}</span></EmailLink></li>}
+          {SITE.phone && <li className="fpill"><PhoneLink><Ic d={ICON.phone} /><span>{SITE.phoneDisplay}</span></PhoneLink></li>}
           {wa && <li className="fpill"><a href={wa} target="_blank" rel="noopener noreferrer"><Ic d={ICON.chat} /><span>WhatsApp</span></a></li>}
           {SITE.linkedin && <li className="fpill"><a href={SITE.linkedin} target="_blank" rel="noopener noreferrer"><Ic d={ICON.linkedin} /><span>LinkedIn</span></a></li>}
           {SITE.address && <li className="fpill"><span className="fpill__t"><Ic d={ICON.pin} /><span>{SITE.address}</span></span></li>}

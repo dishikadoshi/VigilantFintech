@@ -22,6 +22,24 @@
 const nodemailer = require('nodemailer');
 const { adminEmailTemplate  } = require('../templates/adminEmailTemplate');
 const { senderEmailTemplate } = require('../templates/senderEmailTemplate');
+const { BRAND } = require('../templates/emailShared');
+
+// The logo is attached inline (cid:) so it shows in Gmail/Outlook/Apple Mail
+// without depending on the website being deployed or on "load images".
+// It is embedded in templates/logoData.js, so there is no file path that
+// can go wrong.
+const { LOGO_BASE64 } = require('../templates/logoData');
+const LOGO_BUFFER = Buffer.from(LOGO_BASE64, 'base64');
+
+function logoAttachments() {
+  return [{
+    filename: 'vigilant-logo.png',
+    content: LOGO_BUFFER,
+    contentType: 'image/png',
+    cid: BRAND.logoCid,
+    contentDisposition: 'inline',
+  }];
+}
 
 // Catches the case where .env.example was copied to .env but SMTP_USER/
 // SMTP_PASS were never actually replaced with real values — a plain
@@ -143,8 +161,9 @@ async function sendAdminNotification(record) {
     html,
     text,
     replyTo: record.email,
+    attachments: logoAttachments(),
   });
-  console.log(`[Email] Admin notification sent → ${info.messageId}`);
+  console.log(`[Email] Admin notification sent (logo attached) → ${info.messageId}`);
   return info;
 }
 
@@ -161,12 +180,14 @@ async function sendSenderConfirmation(record) {
     html,
     text,
     replyTo: process.env.EMAIL_FROM_ADDRESS || process.env.SMTP_USER,
+    attachments: logoAttachments(),
   });
-  console.log(`[Email] Sender confirmation sent → ${info.messageId}`);
+  console.log(`[Email] Sender confirmation sent (logo attached) → ${info.messageId}`);
   return info;
 }
 
 module.exports = {
+  _logoAttachments: logoAttachments,
   sendAdminNotification,
   sendSenderConfirmation,
   verifyEmailConfig,

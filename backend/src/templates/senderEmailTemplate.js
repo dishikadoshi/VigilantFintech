@@ -2,220 +2,172 @@
  * senderEmailTemplate.js
  * ───────────────────────
  * Confirmation email sent to the person who submitted the form.
- * Warm, professional, on-brand.
+ * Real logo + the website's navy/teal theme. Wording matches the site
+ * (remote business support), and everything from the form is escaped.
  */
 
+const {
+  BRAND, C, FONT, esc, mailtoHref,
+  emailLinks, phoneLink, siteLink, button, formatDate, shell,
+} = require('./emailShared');
+
 function senderEmailTemplate(record) {
-  const firstName = record.firstName;
-  const subject   = `We've received your enquiry, ${firstName} — Vigilant Fintech`;
+  const firstName = (record.firstName || '').trim() || 'there';
+  const company   = (record.company || '').trim();
+  const reason    = (record.reason || '').trim() || 'General enquiry';
+  const subject   = `We've received your enquiry, ${firstName} — ${BRAND.name}`;
 
-  const html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Your Enquiry — Vigilant Fintech</title>
-</head>
-<body style="margin:0;padding:0;background:#f0f2f7;
-             font-family:'Segoe UI',Helvetica,Arial,sans-serif;
-             -webkit-font-smoothing:antialiased;">
-
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation"
-       style="background:#f0f2f7;padding:40px 16px;">
-  <tr><td align="center">
-
-    <table width="600" cellpadding="0" cellspacing="0" role="presentation"
-           style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;
-                  overflow:hidden;box-shadow:0 8px 40px rgba(13,27,62,.12);">
-
-      <!-- Header with logo area -->
+  const hero = `
       <tr>
-        <td style="background:linear-gradient(135deg,#050e24 0%,#0d1b3e 60%,#122158 100%);
-                   padding:40px 40px 36px;text-align:center;">
-          <!-- Logo mark -->
-          <div style="display:inline-block;background:rgba(255,255,255,.1);
-                      border-radius:12px;padding:12px 20px;margin-bottom:24px;">
-            <span style="color:#e8a020;font-size:18px;font-weight:800;
-                         letter-spacing:-.02em;">Vigilant Fintech</span>
-            <span style="color:rgba(255,255,255,.4);margin:0 8px;font-size:12px;">|</span>
-            <span style="color:rgba(255,255,255,.5);font-size:10px;font-weight:600;
-                         letter-spacing:.14em;text-transform:uppercase;">Cost Intelligence</span>
-          </div>
-
-          <!-- Checkmark icon -->
-          <div style="width:64px;height:64px;background:rgba(196,135,10,.15);
-                      border:2px solid rgba(196,135,10,.4);border-radius:50%;
-                      margin:0 auto 20px;display:flex;align-items:center;
-                      justify-content:center;line-height:64px;text-align:center;">
-            <span style="color:#e8a020;font-size:28px;line-height:64px;">✓</span>
-          </div>
-
-          <h1 style="margin:0 0 10px;color:#ffffff;font-size:28px;font-weight:700;
-                     letter-spacing:-.025em;line-height:1.2;">
-            Enquiry Received!
-          </h1>
-          <p style="margin:0;color:rgba(255,255,255,.55);font-size:15px;
-                    font-weight:300;line-height:1.6;">
+        <td align="center" bgcolor="${C.navy}" class="px"
+            style="background-color:${C.navy};background-image:linear-gradient(135deg,${C.navyD} 0%,${C.navy} 60%,${C.navy2} 100%);
+                   padding:38px 40px 36px;text-align:center;">
+          <!-- check mark (table-based so it renders in Outlook too) -->
+          <table cellpadding="0" cellspacing="0" role="presentation" align="center" style="margin:0 auto 20px;">
+            <tr>
+              <td width="64" height="64" align="center" valign="middle" bgcolor="#123c63"
+                  style="width:64px;height:64px;border-radius:50%;background-color:#123c63;border:2px solid ${C.teal};
+                         color:${C.teal};font-family:${FONT};font-size:30px;font-weight:700;line-height:64px;text-align:center;">
+                &#10003;
+              </td>
+            </tr>
+          </table>
+          <h1 class="h1" style="margin:0 0 10px;color:#ffffff;font-family:${FONT};font-size:30px;font-weight:700;
+                                letter-spacing:-.025em;line-height:1.2;">Enquiry Received!</h1>
+          <p style="margin:0;color:rgba(255,255,255,.72);font-family:${FONT};font-size:15px;line-height:1.6;">
             We'll be in touch within one business day.
           </p>
         </td>
-      </tr>
+      </tr>`;
 
+  const body = `
       <!-- Greeting -->
       <tr>
-        <td style="padding:36px 40px 0;">
-          <p style="margin:0 0 16px;color:#0d1b3e;font-size:17px;font-weight:500;
-                    line-height:1.7;">
-            Hi ${firstName},
+        <td class="px" style="padding:34px 40px 0;">
+          <p style="margin:0 0 16px;color:${C.navyD};font-family:${FONT};font-size:18px;font-weight:600;line-height:1.6;">
+            Hi ${esc(firstName)},
           </p>
-          <p style="margin:0 0 16px;color:#374269;font-size:15px;font-weight:300;
-                    line-height:1.8;">
-            Thank you for reaching out to <strong style="color:#0d1b3e;">Vigilant Fintech</strong>. 
+          <p style="margin:0 0 16px;color:${C.body};font-family:${FONT};font-size:15px;line-height:1.8;">
+            Thank you for reaching out to <strong style="color:${C.navyD};">${esc(BRAND.name)}</strong>.
             We've received your enquiry and our team will review it carefully.
           </p>
-          <p style="margin:0;color:#374269;font-size:15px;font-weight:300;line-height:1.8;">
-            A cost strategist will be in contact with you within
-            <strong style="color:#0d1b3e;">one business day</strong> to discuss your specific 
-            situation and how we can help identify savings for 
-            <strong style="color:#0d1b3e;">${record.company}</strong>.
+          <p style="margin:0;color:${C.body};font-family:${FONT};font-size:15px;line-height:1.8;">
+            A member of our team will contact you within <strong style="color:${C.navyD};">one business day</strong>
+            to discuss your requirements and how we can support
+            ${company ? `<strong style="color:${C.navyD};">${esc(company)}</strong>` : 'your business'}.
           </p>
         </td>
       </tr>
 
-      <!-- Summary card -->
+      <!-- Summary -->
       <tr>
-        <td style="padding:28px 40px 0;">
-          <div style="background:#f0f2f7;border-radius:12px;padding:24px;
-                      border:1px solid #e2e6ef;">
-            <h3 style="margin:0 0 16px;color:#0d1b3e;font-size:12px;font-weight:700;
-                       letter-spacing:.14em;text-transform:uppercase;">
-              Your Submission Summary
-            </h3>
-            ${summaryRow('Ref ID',    record.id, true)}
-            ${summaryRow('Company',   record.company)}
-            ${summaryRow('Enquiry',   record.reason)}
-            ${summaryRow('Submitted', new Date(record.timestamp).toLocaleString('en-US', {
-              month:'long', day:'numeric', year:'numeric',
-              hour:'2-digit', minute:'2-digit'
-            }))}
-          </div>
+        <td class="px" style="padding:28px 40px 0;">
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation" bgcolor="${C.bg}"
+                 style="background-color:${C.bg};border:1px solid ${C.line};border-radius:12px;">
+            <tr><td style="padding:22px 24px 12px;">
+              <h3 style="margin:0 0 16px;color:${C.navyD};font-family:${FONT};font-size:12px;font-weight:700;
+                         letter-spacing:.14em;text-transform:uppercase;">Your Submission Summary</h3>
+              ${summaryRow('Ref ID', esc(record.id), true)}
+              ${company ? summaryRow('Company', esc(company)) : ''}
+              ${summaryRow('Enquiry', esc(reason))}
+              ${summaryRow('Submitted', esc(formatDate(record.timestamp)))}
+            </td></tr>
+          </table>
         </td>
       </tr>
 
       <!-- What happens next -->
       <tr>
-        <td style="padding:28px 40px 0;">
-          <h2 style="margin:0 0 20px;color:#0d1b3e;font-size:14px;font-weight:700;
-                     letter-spacing:.12em;text-transform:uppercase;">
-            What Happens Next
-          </h2>
-          ${nextStep('1', '#2045a0', 'Review',
-            'Our team reviews your enquiry and prepares specific questions tailored to your business.')}
-          ${nextStep('2', '#c4870a', 'Initial Call',
-            'A cost strategist reaches out to schedule your free 30-minute diagnostic call.')}
-          ${nextStep('3', '#122158', 'Your Audit',
-            'We dive into your cost structure and identify savings opportunities — typically 15–30%.')}
+        <td class="px" style="padding:30px 40px 0;">
+          <h2 style="margin:0 0 20px;color:${C.navyD};font-family:${FONT};font-size:13px;font-weight:700;
+                     letter-spacing:.12em;text-transform:uppercase;">What Happens Next</h2>
+          ${nextStep('1', C.navy,  'Review',
+            'Our team reviews your enquiry and the requirements you shared.')}
+          ${nextStep('2', C.tealD, 'Free Consultation',
+            'We get in touch to schedule your free, no-obligation consultation.')}
+          ${nextStep('3', C.navy2, 'Your Proposal',
+            'We recommend the right support for your workload and share a customised proposal.')}
         </td>
       </tr>
 
       <!-- CTA -->
       <tr>
-        <td style="padding:32px 40px;text-align:center;">
-          <p style="margin:0 0 20px;color:#7a86a8;font-size:13px;font-weight:300;">
-            While you wait, explore our case studies to see how we've helped businesses like yours.
+        <td class="px" align="center" style="padding:26px 40px 34px;text-align:center;">
+          <p style="margin:0 0 20px;color:${C.muted};font-family:${FONT};font-size:13px;line-height:1.7;">
+            While you wait, take a look around our website to see how we support businesses like yours.
           </p>
-          <a href="https://vigilantfintech.com"
-             style="display:inline-block;background:#0d1b3e;color:#ffffff;font-size:14px;
-                    font-weight:600;padding:14px 32px;border-radius:10px;
-                    text-decoration:none;letter-spacing:-.01em;">
-            View Case Studies →
-          </a>
+          ${button(BRAND.siteUrl, 'Explore Website →', 'teal')}
         </td>
       </tr>
 
       <!-- Divider -->
-      <tr>
-        <td style="padding:0 40px;">
-          <div style="height:1px;background:#e2e6ef;"></div>
-        </td>
-      </tr>
+      <tr><td class="px" style="padding:0 40px;"><div style="height:1px;line-height:1px;font-size:0;background-color:${C.line};">&nbsp;</div></td></tr>
 
-      <!-- Contact info -->
+      <!-- Contact -->
       <tr>
-        <td style="padding:24px 40px;">
-          <p style="margin:0 0 8px;color:#374269;font-size:14px;font-weight:400;
-                    line-height:1.6;">
+        <td class="px" style="padding:24px 40px 28px;">
+          <p style="margin:0 0 14px;color:${C.body};font-family:${FONT};font-size:14px;font-weight:600;line-height:1.6;">
             Have urgent questions? Contact us directly:
           </p>
-          <p style="margin:0;color:#374269;font-size:14px;line-height:1.8;font-weight:300;">
-            📧 <a href="mailto:vigilantfintech@gmail.com"
-                  style="color:#2045a0;text-decoration:none;font-weight:600;">
-                  vigilantfintech@gmail.com</a><br/>
-            📞 <a href="tel:+917597703903"
-                  style="color:#2045a0;text-decoration:none;font-weight:600;">
-                  +91 7597703903</a>
-          </p>
-        </td>
-      </tr>
-
-      <!-- Footer -->
-      <tr>
-        <td style="background:#050e24;padding:24px 40px;border-radius:0 0 16px 16px;">
-          <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-            <tr>
-              <td>
-                <p style="margin:0;color:rgba(255,255,255,.35);font-size:12px;
-                          font-weight:300;line-height:1.6;">
-                  © ${new Date().getFullYear()} Vigilant Fintech. All rights reserved.<br/>
-                  123 Financial District, Suite 800, New York, NY 10004
-                </p>
-              </td>
-              <td align="right">
-                <p style="margin:0;color:rgba(196,135,10,.6);font-size:12px;
-                          font-style:italic;font-weight:300;">
-                  Built for ambitious SMBs
-                </p>
-              </td>
-            </tr>
+          <table cellpadding="0" cellspacing="0" role="presentation">
+            ${contactRow('Email',   emailLinks(BRAND.email, { subject: `Question about my enquiry [${record.id}]` }))}
+            ${contactRow('Phone',   phoneLink(BRAND.phoneDisplay, BRAND.phone))}
+            ${contactRow('Website', siteLink())}
           </table>
         </td>
-      </tr>
+      </tr>`;
 
-    </table>
-  </td></tr>
-</table>
+  const footer = `
+      <tr>
+        <td class="px" align="center" bgcolor="${C.navyD}" style="background-color:${C.navyD};padding:24px 40px;text-align:center;">
+          <p style="margin:0 0 6px;color:${C.teal};font-family:${FONT};font-size:12px;font-style:italic;line-height:1.6;">
+            ${esc(BRAND.tagline)}
+          </p>
+          <p style="margin:0;color:rgba(255,255,255,.55);font-family:${FONT};font-size:12px;line-height:1.7;">
+            © ${new Date().getFullYear()} ${esc(BRAND.name)}. All rights reserved.<br/>
+            <a href="${esc(BRAND.siteUrl)}" target="_blank" rel="noopener" style="color:rgba(255,255,255,.8);text-decoration:underline;">${esc(BRAND.siteDisplay)}</a>
+            · <a href="${esc(mailtoHref(BRAND.email))}" style="color:rgba(255,255,255,.8);text-decoration:underline;">${esc(BRAND.email)}</a>
+            ${BRAND.address ? `<br/>${esc(BRAND.address)}` : ''}
+          </p>
+        </td>
+      </tr>`;
 
-</body>
-</html>`;
+  const html = shell({
+    title: `Your enquiry — ${BRAND.name}`,
+    preheader: `We've received your enquiry (ref ${record.id}) and will be in touch within one business day.`,
+    hero, body, footer,
+  });
 
   const text = `
 Hi ${firstName},
 
-Thank you for reaching out to Vigilant Fintech!
+Thank you for reaching out to ${BRAND.name}!
 
-We've received your enquiry and a cost strategist will be in touch 
-within one business day to discuss your situation.
+We've received your enquiry and a member of our team will be in touch
+within one business day to discuss your requirements.
 
 SUBMISSION SUMMARY
 ──────────────────
 Ref ID    : ${record.id}
-Company   : ${record.company}
-Enquiry   : ${record.reason}
-Submitted : ${record.timestamp}
+${company ? `Company   : ${company}\n` : ''}Enquiry   : ${reason}
+Submitted : ${formatDate(record.timestamp)}
 
 WHAT HAPPENS NEXT
 ─────────────────
 1. Our team reviews your enquiry.
-2. A strategist schedules your free 30-min diagnostic call.
-3. We identify savings — typically 15–30% of total spend.
+2. We get in touch to schedule your free consultation.
+3. We recommend the right support and share a customised proposal.
+
+Explore our website: ${BRAND.siteUrl}
 
 Questions? Contact us:
-  Email : vigilantfintech@gmail.com
-  Phone : +91 7597703903
+  Email   : ${BRAND.email}
+  Phone   : ${BRAND.phoneDisplay}
+  Website : ${BRAND.siteUrl}
 
 Best regards,
-The Vigilant Fintech Team
+The ${BRAND.name} Team
+${BRAND.tagline}
 `.trim();
 
   return { subject, html, text };
@@ -223,42 +175,49 @@ The Vigilant Fintech Team
 
 function summaryRow(label, value, mono = false) {
   return `
-    <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
-           style="margin-bottom:10px;">
-      <tr>
-        <td style="width:100px;vertical-align:top;">
-          <span style="color:#7a86a8;font-size:12px;font-weight:600;
-                       letter-spacing:.08em;text-transform:uppercase;">${label}</span>
-        </td>
-        <td style="vertical-align:top;">
-          <span style="color:#0d1b3e;font-size:${mono ? '13px' : '14px'};
-                       font-weight:600;
-                       font-family:${mono ? "'Courier New',monospace" : 'inherit'};
-                       color:${mono ? '#c4870a' : '#0d1b3e'};">
-            ${value}
-          </span>
-        </td>
-      </tr>
-    </table>`;
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:10px;">
+                <tr>
+                  <td style="width:100px;vertical-align:top;">
+                    <span style="color:${C.muted};font-family:${FONT};font-size:12px;font-weight:700;
+                                 letter-spacing:.08em;text-transform:uppercase;">${label}</span>
+                  </td>
+                  <td style="vertical-align:top;">
+                    <span style="font-size:${mono ? '13px' : '14px'};font-weight:700;
+                                 font-family:${mono ? "'Courier New',monospace" : FONT};
+                                 color:${mono ? C.tealD : C.navyD};">${value}</span>
+                  </td>
+                </tr>
+              </table>`;
 }
 
 function nextStep(num, color, title, desc) {
   return `
-    <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
-           style="margin-bottom:16px;">
-      <tr>
-        <td style="width:36px;vertical-align:top;padding-top:2px;">
-          <div style="width:28px;height:28px;background:${color};border-radius:50%;
-                      text-align:center;line-height:28px;">
-            <span style="color:#fff;font-size:13px;font-weight:700;">${num}</span>
-          </div>
-        </td>
-        <td style="padding-left:12px;vertical-align:top;">
-          <p style="margin:0 0 4px;color:#0d1b3e;font-size:14px;font-weight:700;">${title}</p>
-          <p style="margin:0;color:#374269;font-size:13px;font-weight:300;line-height:1.65;">${desc}</p>
-        </td>
-      </tr>
-    </table>`;
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:16px;">
+            <tr>
+              <td width="40" style="width:40px;vertical-align:top;padding-top:2px;">
+                <table cellpadding="0" cellspacing="0" role="presentation"><tr>
+                  <td width="28" height="28" align="center" valign="middle" bgcolor="${color}"
+                      style="width:28px;height:28px;background-color:${color};border-radius:50%;color:#ffffff;
+                             font-family:${FONT};font-size:13px;font-weight:700;line-height:28px;text-align:center;">${num}</td>
+                </tr></table>
+              </td>
+              <td style="padding-left:6px;vertical-align:top;">
+                <p style="margin:0 0 4px;color:${C.navyD};font-family:${FONT};font-size:14px;font-weight:700;">${title}</p>
+                <p style="margin:0;color:${C.body};font-family:${FONT};font-size:13px;line-height:1.65;">${desc}</p>
+              </td>
+            </tr>
+          </table>`;
+}
+
+function contactRow(label, value) {
+  return `
+            <tr>
+              <td style="padding:0 18px 12px 0;vertical-align:top;">
+                <span style="color:${C.muted};font-family:${FONT};font-size:12px;font-weight:700;
+                             letter-spacing:.08em;text-transform:uppercase;line-height:22px;">${label}</span>
+              </td>
+              <td style="padding:0 0 12px;vertical-align:top;font-family:${FONT};font-size:14px;line-height:22px;">${value}</td>
+            </tr>`;
 }
 
 module.exports = { senderEmailTemplate };

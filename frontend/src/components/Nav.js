@@ -5,6 +5,7 @@ import { Link, useRouter } from '../lib/router';
 import Logo from './Logo';
 import { Button } from './ui';
 import { NAV, SITE, CONSULT_TO, whatsappHref } from '../config/site';
+import { EmailLink, PhoneLink } from './ContactLinks';
 
 // Which landing-page block each navigation item belongs to
 const BLOCKS = [
@@ -280,9 +281,9 @@ export default function Nav() {
               Book a Free Consultation
             </Button>
             <div className="menu__contact">
-              {SITE.phone && <a href={`tel:+${SITE.phone.length === 10 ? '91' : ''}${SITE.phone}`} onClick={close} tabIndex={open ? 0 : -1}>Call</a>}
+              {SITE.phone && <PhoneLink onClick={close} tabIndex={open ? 0 : -1}>Call</PhoneLink>}
               {whatsappHref() && <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" onClick={close} tabIndex={open ? 0 : -1}>WhatsApp</a>}
-              {SITE.email && <a href={`mailto:${SITE.email}`} onClick={close} tabIndex={open ? 0 : -1}>Email</a>}
+              {SITE.email && <EmailLink onClick={close} tabIndex={open ? 0 : -1}>Email</EmailLink>}
             </div>
             <p className="menu__tag">{SITE.tagline}</p>
           </div>

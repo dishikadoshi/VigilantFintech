@@ -6,6 +6,7 @@ import { onPrefill, prefill } from '../lib/store';
 import { FORM_SERVICES } from '../content/services';
 import { CONTACT } from '../content/copy';
 import { SITE, API_BASE } from '../config/site';
+import { EmailLink, PhoneLink } from '../components/ContactLinks';
 import './contact.css';
 
 const Ico = ({ children }) => <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
@@ -491,7 +492,7 @@ export default function Contact() {
                   <i className="ci"><IcoMail /></i>
                   <div>
                     <span>Email</span>
-                    <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+                    <EmailLink />
                   </div>
                 </li>
               )}
@@ -501,7 +502,7 @@ export default function Contact() {
                   <i className="ci"><IcoPhone /></i>
                   <div>
                     <span>Phone</span>
-                    <a href={`tel:+91${SITE.phone}`}>{SITE.phoneDisplay}</a>
+                    <PhoneLink />
                   </div>
                 </li>
               )}

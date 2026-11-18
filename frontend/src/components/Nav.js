@@ -4,7 +4,7 @@ import { gsap, lockScroll } from '../lib/smooth';
 import { Link, useRouter } from '../lib/router';
 import Logo from './Logo';
 import { Button } from './ui';
-import { NAV, SITE, CONSULT_TO } from '../config/site';
+import { NAV, SITE, CONSULT_TO, whatsappHref } from '../config/site';
 
 // Which landing-page block each navigation item belongs to
 const BLOCKS = [
@@ -111,6 +111,17 @@ export default function Nav() {
   }, [active, path]);
 
   const close = () => setOpen(false);
+
+  // The menu also closes if the address changes by any other route (back button, hash jump)
+  useEffect(() => {
+    const shut = () => setOpen(false);
+    window.addEventListener('hashchange', shut);
+    window.addEventListener('popstate', shut);
+    return () => {
+      window.removeEventListener('hashchange', shut);
+      window.removeEventListener('popstate', shut);
+    };
+  }, []);
 
   // Escape closes the menu
   useEffect(() => {
@@ -239,6 +250,7 @@ export default function Nav() {
           className="menu__in"
           aria-label="Mobile"
         >
+          <p className="menu__label" data-m="">Menu</p>
           {NAV.map((n, i) => (
             <Link
               key={n.to}
@@ -260,6 +272,7 @@ export default function Nav() {
           <div className="menu__foot" data-m="">
             <Button
               to={SITE.booking || CONSULT_TO}
+              variant="teal"
               magnetic={false}
               onClick={close}
               tabIndex={open ? 0 : -1}
@@ -267,9 +280,11 @@ export default function Nav() {
               Book a Free Consultation
             </Button>
             <div className="menu__contact">
-              {SITE.phone && <a href={`tel:+${SITE.phone.length === 10 ? '91' : ''}${SITE.phone}`} tabIndex={open ? 0 : -1}>{SITE.phoneDisplay}</a>}
-              {SITE.email && <a href={`mailto:${SITE.email}`} tabIndex={open ? 0 : -1}>{SITE.email}</a>}
+              {SITE.phone && <a href={`tel:+${SITE.phone.length === 10 ? '91' : ''}${SITE.phone}`} onClick={close} tabIndex={open ? 0 : -1}>Call</a>}
+              {whatsappHref() && <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" onClick={close} tabIndex={open ? 0 : -1}>WhatsApp</a>}
+              {SITE.email && <a href={`mailto:${SITE.email}`} onClick={close} tabIndex={open ? 0 : -1}>Email</a>}
             </div>
+            <p className="menu__tag">{SITE.tagline}</p>
           </div>
         </nav>
       </div>

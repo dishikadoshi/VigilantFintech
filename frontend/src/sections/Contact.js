@@ -550,7 +550,7 @@ export default function Contact() {
           </div>
 
           <div className="contact__stage">
-            <div className="contact__card" data-tilt="2">
+            <div className="contact__card">
               {status === 'done' ? (
                 <div className="done" role="status">
                   <svg

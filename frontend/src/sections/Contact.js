@@ -560,7 +560,7 @@ export default function Contact() {
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={submit} noValidate={false}>
+                <form onSubmit={submit} noValidate={false} autoComplete="on" name="contact">
                   <div className="contact__cardhead">
                     <i><IcoSend /></i>
                     <div>
@@ -575,6 +575,8 @@ export default function Contact() {
                       <input
                         required
                         placeholder="e.g. Priya Sharma"
+                        id="contact-name"
+                        name="name"
                         autoComplete="name"
                         value={f.name}
                         onChange={set('name')}
@@ -586,6 +588,8 @@ export default function Contact() {
                       <input
                         required
                         placeholder="e.g. Acme Pvt. Ltd."
+                        id="contact-company"
+                        name="company"
                         autoComplete="organization"
                         value={f.company}
                         onChange={set('company')}
@@ -598,6 +602,8 @@ export default function Contact() {
                         required
                         type="email"
                         placeholder="you@company.com"
+                        id="contact-email"
+                        name="email"
                         autoComplete="email"
                         value={f.email}
                         onChange={set('email')}
@@ -611,6 +617,8 @@ export default function Contact() {
                         type="tel"
                         inputMode="tel"
                         placeholder="+91 98765 43210"
+                        id="contact-phone"
+                        name="phone"
                         autoComplete="tel"
                         value={f.phone}
                         onChange={set('phone')}

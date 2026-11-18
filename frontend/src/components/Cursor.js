@@ -20,19 +20,31 @@ export default function Cursor() {
     const move = (e) => {
       dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY);
       root.current.classList.add('is-on');
+      sync(e.target);
     };
-    const over = (e) => {
-      const el = e.target.closest ? e.target.closest('[data-cursor], a, button, summary, [role="button"], input, textarea, select, label') : null;
+    // Over the contact form (and any [data-native-cursor] area) the custom cursor is
+    // switched off completely and the browser's own I-beam / pointer / arrow is used.
+    // State is re-evaluated on every move, not just on pointerover, because the form
+    // is pinned, scaled and tilted by GSAP and elements shift under a still pointer.
+    const NATIVE = '.contact__card, [data-native-cursor]';
+    let last = null;
+    const sync = (t) => {
+      if (t === last) return;
+      last = t;
       const c = root.current;
+      if (!c) return;
       c.classList.remove('is-link', 'is-view', 'is-text');
+      const el = t && t.closest ? t.closest('[data-cursor], a, button, summary, [role="button"], input, textarea, select, label') : null;
+      c.classList.toggle('is-native', !!(t && t.closest && t.closest(NATIVE)));
       if (!el) return;
       if (el.matches('input, textarea, select')) { c.classList.add('is-text'); return; }
       if (el.dataset && el.dataset.cursor) { label.current.textContent = el.dataset.cursor; c.classList.add('is-view'); return; }
       c.classList.add('is-link');
     };
+    const over = (e) => sync(e.target);
     const down = () => root.current.classList.add('is-down');
     const up = () => root.current.classList.remove('is-down');
-    const leave = () => root.current.classList.remove('is-on');
+    const leave = () => { last = null; root.current.classList.remove('is-on', 'is-native'); };
     window.addEventListener('pointermove', move, { passive: true });
     document.addEventListener('pointerover', over, { passive: true });
     window.addEventListener('pointerdown', down);

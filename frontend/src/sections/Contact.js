@@ -7,6 +7,9 @@ import { FORM_SERVICES } from '../content/services';
 import { CONTACT } from '../content/copy';
 import { SITE, API_BASE } from '../config/site';
 import { EmailLink, PhoneLink } from '../components/ContactLinks';
+import PhoneField from '../components/PhoneField';
+import SelectField from '../components/SelectField';
+import { DEFAULT_COUNTRY, getCountry } from '../content/countries';
 import './contact.css';
 
 const Ico = ({ children }) => <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
@@ -52,6 +55,8 @@ export default function Contact() {
   const [other, setOther] = useState('');
   const [status, setStatus] = useState('idle');
   const [err, setErr] = useState('');
+  const [cc, setCc] = useState(DEFAULT_COUNTRY);
+  const [sms, setSms] = useState(false);
 
   const set = (k) => (e) =>
     setF((x) => ({ ...x, [k]: e.target.value }));
@@ -374,8 +379,18 @@ export default function Contact() {
       return;
     }
 
-    if (f.phone.replace(/\D/g, '').length < 7) {
-      setErr('Please enter a valid phone / WhatsApp number (with country code).');
+    const country = getCountry(cc);
+    const digits = f.phone.replace(/\D/g, '');
+    const phoneOk = country.iso === 'IN'
+      ? digits.length === 10
+      : digits.length >= 6 && digits.length <= 14;
+
+    if (!phoneOk) {
+      setErr(
+        country.iso === 'IN'
+          ? 'Please enter a valid 10-digit phone / WhatsApp number.'
+          : 'Please enter a valid phone / WhatsApp number.'
+      );
       return;
     }
 
@@ -406,11 +421,11 @@ export default function Contact() {
           lastName: parts.slice(1).join(' '),
           company: f.company.trim(),
           email: f.email.trim(),
-          phone: f.phone.replace(/[^\d\s().-]/g, '').trim(),
-          countryCode: '',
+          phone: digits,
+          countryCode: `+${country.dial}`,
           reason: reasons.join(', '),
           message: msg,
-          smsConsent: false
+          smsConsent: sms
         })
       });
 
@@ -429,6 +444,7 @@ export default function Contact() {
 
       setStatus('done');
       setF(empty);
+      setSms(false);
       setSvc('');
       setOther('');
     } catch {
@@ -611,45 +627,28 @@ export default function Contact() {
                       />
                     </label>
 
-                    <label className="fld">
-                      <span>Phone / WhatsApp *</span>
-                      <input
-                        required
-                        type="tel"
-                        inputMode="tel"
-                        placeholder="+91 98765 43210"
-                        id="contact-phone"
-                        name="phone"
-                        autoComplete="tel"
-                        value={f.phone}
-                        onChange={set('phone')}
-                      />
-                    </label>
+                    <PhoneField
+                      id="contact-phone"
+                      label="Phone / WhatsApp *"
+                      country={cc}
+                      value={f.phone}
+                      onCountry={setCc}
+                      onValue={(v) => setF((x) => ({ ...x, phone: v }))}
+                    />
                   </div>
 
-                  <label className="fld fld--wide">
-                    <span>Service you need *</span>
-
-                    <select
-                      required
-                      value={svc}
-                      onChange={(e) => {
-                        setSvc(e.target.value);
-
-                        if (e.target.value !== OTHER) {
-                          setOther('');
-                        }
-                      }}
-                    >
-                      <option value="" disabled>Select a service…</option>
-
-                      {FORM_SERVICES.map((l) => (
-                        <option key={l} value={l}>{l}</option>
-                      ))}
-
-                      <option value={OTHER}>{OTHER}</option>
-                    </select>
-                  </label>
+                  <SelectField
+                    id="contact-service"
+                    className="fld--wide"
+                    label="Service you need *"
+                    placeholder="Select a service…"
+                    options={[...FORM_SERVICES, OTHER]}
+                    value={svc}
+                    onChange={(v) => {
+                      setSvc(v);
+                      if (v !== OTHER) setOther('');
+                    }}
+                  />
 
                   {svc === OTHER && (
                     <label className="fld fld--wide fld--other">
@@ -665,21 +664,15 @@ export default function Contact() {
                     </label>
                   )}
 
-                  <label className="fld fld--wide">
-                    <span>Estimated workload *</span>
-
-                    <select
-                      required
-                      value={f.workload}
-                      onChange={set('workload')}
-                    >
-                      <option value="" disabled>Select your workload…</option>
-
-                      {CONTACT.workloads.map((w) => (
-                        <option key={w}>{w}</option>
-                      ))}
-                    </select>
-                  </label>
+                  <SelectField
+                    id="contact-workload"
+                    className="fld--wide"
+                    label="Estimated workload *"
+                    placeholder="Select your workload…"
+                    options={CONTACT.workloads}
+                    value={f.workload}
+                    onChange={(v) => setF((x) => ({ ...x, workload: v }))}
+                  />
 
                   <label className="fld fld--wide">
                     <span>Tell us about your requirements *</span>
@@ -691,6 +684,17 @@ export default function Contact() {
                       value={f.message}
                       onChange={set('message')}
                     />
+                  </label>
+
+                  <label className="fld fld--check">
+                    <input
+                      type="checkbox"
+                      name="smsConsent"
+                      checked={sms}
+                      onChange={(e) => setSms(e.target.checked)}
+                    />
+                    <i aria-hidden="true"><IcoCheck /></i>
+                    <span>By checking this box, I agree to receive text messages from {SITE.name}.</span>
                   </label>
 
                   {err && (

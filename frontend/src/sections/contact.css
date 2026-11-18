@@ -52,3 +52,54 @@
 @media (max-height: 800px) and (min-width: 900px) { .contact .contact__steps small { display: none; } .contact .contact__head .lead { font-size: .92rem; } }
 @media (max-width: 899px) { .contact .contact__info { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .contact .contact__steps { grid-template-columns: 1fr; } .contact .contact__steps li:not(:last-child)::after { display: none; } }
+
+/* ── phone field: country-code picker + number ─────────── */
+.contact .phone-fld { position: relative; z-index: 20; display: grid; gap: .4rem; }
+.contact .phone__lbl { font: 600 .72rem var(--f-display); letter-spacing: .04em; color: var(--navy-2); margin-bottom: .1rem; }
+.contact .phone { position: relative; display: flex; align-items: stretch; background: #f3f7f6; border: 1.5px solid rgba(16, 48, 90, .06); border-radius: 12px; transition: border-color .3s, background .3s, box-shadow .3s; }
+.contact .phone:hover { border-color: rgba(37, 195, 173, .5); }
+.contact .phone:focus-within, .contact .phone.is-open { background: #fff; border-color: var(--teal); box-shadow: 0 0 0 4px rgba(37, 195, 173, .18); }
+.contact .phone__cc { flex: none; display: inline-flex; align-items: center; gap: .4rem; padding: 0 .65rem 0 .8rem; border: 0; border-right: 1px solid rgba(16, 48, 90, .1); background: transparent; border-radius: 12px 0 0 12px; font: 400 .88rem var(--f-body); color: var(--navy-d); white-space: nowrap; }
+.contact .phone__cc em { font: 600 .68rem var(--f-display); font-style: normal; letter-spacing: .04em; color: var(--navy-2); }
+.contact .phone__cc b { font-weight: 700; }
+.contact .phone__cc svg { color: var(--muted); transition: transform .25s var(--ease); }
+.contact .phone.is-open .phone__cc svg { transform: rotate(180deg); }
+.contact .phone .phone__num { flex: 1; min-width: 0; background: transparent; border: 0; border-radius: 0 12px 12px 0; box-shadow: none; }
+.contact .phone .phone__num:focus, .contact .phone .phone__num:hover { background: transparent; box-shadow: none; border: 0; }
+
+.contact .phone__pop { position: absolute; z-index: 30; left: 0; top: calc(100% + 6px); width: 100%; min-width: 270px; padding: .5rem; background: #fff; border: 1px solid rgba(16, 48, 90, .1); border-radius: 14px; box-shadow: 0 24px 50px -18px rgba(11, 27, 58, .45); }
+.contact .phone__pop .phone__search { margin-bottom: .4rem; background: #f3f7f6; padding: .55rem .8rem; font-size: .85rem; }
+.contact .phone__list { list-style: none; margin: 0; padding: 0; max-height: 210px; overflow-y: auto; overscroll-behavior: contain; }
+.contact .phone__list li { display: grid; grid-template-columns: 2rem 1fr auto; align-items: center; gap: .6rem; padding: .5rem .6rem; border-radius: 9px; font-size: .85rem; color: var(--navy-d); }
+.contact .phone__list li em { font: 600 .66rem var(--f-display); font-style: normal; letter-spacing: .04em; color: var(--navy-2); }
+.contact .phone__list li b { font-weight: 700; font-size: .8rem; color: var(--muted); }
+.contact .phone__list li.is-active { background: rgba(37, 195, 173, .14); }
+.contact .phone__list li.is-sel span { font-weight: 700; }
+.contact .phone__list li.phone__none { display: block; color: var(--muted); text-align: center; }
+
+/* ── SMS consent checkbox ──────────────────────────────── */
+.contact .fld--check { position: relative; display: flex; align-items: flex-start; gap: .65rem; margin: .1rem 0 .9rem; cursor: pointer; }
+.contact .fld--check input { position: absolute; opacity: 0; width: 18px; height: 18px; margin: 0; padding: 0; }
+.contact .fld--check i { flex: none; display: grid; place-items: center; width: 18px; height: 18px; margin-top: .1rem; border-radius: 5px; background: #fff; border: 1.5px solid rgba(16, 48, 90, .35); color: transparent; transition: background .2s, border-color .2s, box-shadow .2s, color .2s; }
+.contact .fld--check i svg { width: 12px; height: 12px; stroke-width: 3; }
+.contact .fld--check:hover i { border-color: var(--teal); }
+.contact .fld--check input:checked + i { background: var(--teal-d); border-color: var(--teal-d); color: #fff; }
+.contact .fld--check input:focus-visible + i { box-shadow: 0 0 0 4px rgba(37, 195, 173, .25); }
+.contact .fld--check > span { font: 400 .78rem/1.45 var(--f-body); letter-spacing: 0; color: var(--muted); }
+
+/* ── custom select (service / workload), same look as the phone picker ── */
+.contact .sel-fld { position: relative; z-index: 10; display: grid; gap: .4rem; }
+.contact .sel-fld.is-open { z-index: 25; }
+.contact .sel__lbl { font: 600 .72rem var(--f-display); letter-spacing: .04em; color: var(--navy-2); margin-bottom: .1rem; }
+.contact .sel { position: relative; }
+.contact .sel__btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: .6rem; text-align: left; padding: .72rem .95rem; background: #f3f7f6; border: 1.5px solid rgba(16, 48, 90, .06); border-radius: 12px; font: 400 .92rem var(--f-body); color: var(--navy-d); transition: border-color .3s, background .3s, box-shadow .3s; }
+.contact .sel__btn.is-empty { color: rgba(16, 48, 90, .42); }
+.contact .sel__btn span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.contact .sel__btn svg { flex: none; color: var(--muted); transition: transform .25s var(--ease); }
+.contact .sel__btn:hover { border-color: rgba(37, 195, 173, .5); }
+.contact .sel__btn:focus-visible, .contact .sel.is-open .sel__btn { outline: none; background: #fff; border-color: var(--teal); box-shadow: 0 0 0 4px rgba(37, 195, 173, .18); }
+.contact .sel.is-open .sel__btn svg { transform: rotate(180deg); }
+.contact .sel__pop { min-width: 0; }
+.contact .phone__list li.sel__opt { grid-template-columns: 1fr auto; }
+.contact .phone__list li.sel__opt svg { color: var(--teal-d); }
+.contact .sel__pop .phone__list { max-height: 250px; }

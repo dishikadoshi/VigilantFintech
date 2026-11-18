@@ -110,6 +110,16 @@ export default function Nav() {
     });
   }, [active, path]);
 
+  const close = () => setOpen(false);
+
+  // Escape closes the menu
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
   // Mobile menu animation
   useEffect(() => {
     lockScroll(open);
@@ -120,19 +130,16 @@ export default function Nav() {
       gsap.fromTo(
         el.querySelectorAll('[data-m]'),
         {
-          y: 50,
-          rotateX: -45,
+          x: 28,
           opacity: 0,
-          transformPerspective: 800,
         },
         {
-          y: 0,
-          rotateX: 0,
+          x: 0,
           opacity: 1,
-          duration: 0.9,
-          ease: 'expo.out',
-          stagger: 0.06,
-          delay: 0.15,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.05,
+          delay: 0.12,
         }
       );
     }
@@ -215,12 +222,19 @@ export default function Nav() {
         </div>
       </header>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation: closes as soon as a page is picked (or the backdrop is tapped) */}
       <div
         className={`menu${open ? ' is-open' : ''}`}
         ref={menu}
         aria-hidden={!open}
       >
+        <button
+          type="button"
+          className="menu__scrim"
+          aria-label="Close menu"
+          tabIndex={-1}
+          onClick={close}
+        />
         <nav
           className="menu__in"
           aria-label="Mobile"
@@ -229,6 +243,7 @@ export default function Nav() {
             <Link
               key={n.to}
               to={n.to}
+              onClick={close}
               className={`menu__link${
                 active === n.to ? ' is-active' : ''
               }`}
@@ -246,10 +261,15 @@ export default function Nav() {
             <Button
               to={SITE.booking || CONSULT_TO}
               magnetic={false}
+              onClick={close}
               tabIndex={open ? 0 : -1}
             >
               Book a Free Consultation
             </Button>
+            <div className="menu__contact">
+              {SITE.phone && <a href={`tel:+${SITE.phone.length === 10 ? '91' : ''}${SITE.phone}`} tabIndex={open ? 0 : -1}>{SITE.phoneDisplay}</a>}
+              {SITE.email && <a href={`mailto:${SITE.email}`} tabIndex={open ? 0 : -1}>{SITE.email}</a>}
+            </div>
           </div>
         </nav>
       </div>

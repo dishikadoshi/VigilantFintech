@@ -19,8 +19,7 @@ const Icon = ({ i, className }) => (
 /**
  * Desktop (>= 900px): all six reasons on a pinned 3D board. Cards fly in, the board tilts and a
  * light sweep highlights each reason in turn.
- * Phones: a clean vertical timeline (.wlist). Each reason is a full card, a teal line fills with
- * scroll and the card nearest the middle of the screen is highlighted. No pinning, no tilt.
+ * Phones: stacked cards (.wlist) that slide in from alternating sides as you scroll and slide back out as they leave.
  */
 export default function Why() {
   const root = useRef(null);
@@ -54,14 +53,16 @@ export default function Why() {
       });
 
       mm.add('(max-width: 899px)', () => {
-        const list = root.current.querySelector('.wlist');
+        // Phones: stacked cards that slide in from alternating sides, hold, then slide out the other way.
         const items = gsap.utils.toArray('.witem', root.current);
-        gsap.fromTo('.wlist__fill', { scaleY: 0 }, { scaleY: 1, ease: 'none', transformOrigin: 'top',
-          scrollTrigger: { trigger: list, start: 'top 60%', end: 'bottom 60%', scrub: 0.4 } });
-        items.forEach((it) => {
-          gsap.fromTo(it, { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-            scrollTrigger: { trigger: it, start: 'top 90%', toggleActions: 'play none none reverse' } });
-          gsap.timeline({ scrollTrigger: { trigger: it, start: 'top 58%', end: 'bottom 58%', toggleClass: { targets: it, className: 'is-active' } } });
+        items.forEach((it, i) => {
+          const dir = i % 2 ? 1 : -1; // odd cards come from the right, even from the left
+          const tl = gsap.timeline({ defaults: { ease: 'none' },
+            scrollTrigger: { trigger: it, start: 'top 98%', end: 'bottom 2%', scrub: 0.5,
+              toggleClass: { targets: it, className: 'is-active' } } });
+          tl.fromTo(it, { x: dir * 130, opacity: 0, rotate: dir * 2 }, { x: 0, opacity: 1, rotate: 0, duration: 0.3, ease: 'power3.out' }, 0)
+            .fromTo(it.querySelector('.witem__ic'), { scale: 0.4, rotate: dir * -40 }, { scale: 1, rotate: 0, duration: 0.25, ease: 'back.out(2)' }, 0.1)
+            .to(it, { x: -dir * 130, opacity: 0, rotate: -dir * 2, duration: 0.25, ease: 'power3.in' }, 0.75);
         });
       });
     }, root);
@@ -90,13 +91,10 @@ export default function Why() {
           </div>
           {/* phones */}
           <div className="wlist">
-            <span className="wlist__rail" aria-hidden="true"><i className="wlist__fill" /></span>
             {WHY.items.map(([t, d], i) => (
               <article className="witem" key={t}>
-                <div className="witem__top">
-                  <span className="witem__ic"><Icon i={i} /></span>
-                  <span className="witem__n">{String(i + 1).padStart(2, '0')}</span>
-                </div>
+                <span className="witem__n">{String(i + 1).padStart(2, '0')}</span>
+                <span className="witem__ic"><Icon i={i} /></span>
                 <h3>{t}</h3>
                 <p>{d}</p>
               </article>

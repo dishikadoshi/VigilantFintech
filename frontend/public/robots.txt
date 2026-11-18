@@ -1,4 +1,5 @@
+
 User-agent: *
 Allow: /
 
-Sitemap: https://www.vigilantfintech.com/sitemap.xml
+Sitemap: https://vigilantfintech.com/sitemap.xml

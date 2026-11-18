@@ -25,8 +25,8 @@ export default function How() {
         const fill = el.querySelector('.hsteps__fill');
         const stack = el.querySelector('.hstack');
         const GAP = mobile ? 40 : 52;
-        const Y0 = mobile ? 24 : 70;
-        const Y1 = mobile ? 22 : 76;
+        const Y0 = mobile ? 64 : 70;
+        const Y1 = mobile ? 62 : 76;
         const LEN = mobile ? 3.2 : 3.4;
         gsap.set(stack, { transformPerspective: 1400, rotateX: 60, rotateZ: mobile ? -8 : -14, y: Y0, scale: mobile ? 0.95 : 0.9 });
         plates.forEach((p, i) => gsap.set(p, { z: i * 6, y: (mobile ? 18 : 30) + (N - i) * (mobile ? 10 : 16), opacity: 0 }));

@@ -112,13 +112,12 @@
    Desktop rules above are not touched.
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 899px) {
-  .ab-stage { height: 100vh; height: 100svh; }
+  .ab-stage { height: 100vh; }
   .ab-fls { display: none; }
 
   .ab-grid2 {
     grid-template-rows: 24% minmax(0, 1fr);
     height: calc(100vh - var(--nav-h) - 4.4rem);
-    height: calc(100svh - var(--nav-h) - 4.4rem);
     gap: .3rem;
   }
   .ab-3d { min-height: 0; overflow: visible; }

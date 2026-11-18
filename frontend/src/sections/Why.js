@@ -24,31 +24,40 @@ export default function Why() {
     const mm = gsap.matchMedia();
     const ctx = gsap.context(() => {
       const cards = gsap.utils.toArray('.wcard', root.current);
-      mm.add('(min-width: 900px)', () => {
+      const spots = gsap.utils.toArray('.wspot', root.current);
+      // One builder for both layouts: desktop board (3 x 2) and phones (2 x 3 tiles + a spotlight panel).
+      const build = (mobile) => {
         const pin = root.current.querySelector('.why__pin');
         const board = root.current.querySelector('.wboard');
+        const LEN = mobile ? 2.8 : 3;
         gsap.set(board, { transformPerspective: 1600, transformOrigin: '50% 60%' });
-        const from = (i) => ({ z: -1400 - (i % 3) * 300, x: (i % 3 - 1) * 520, y: i < 3 ? -380 : 380, rotateY: (i % 3 - 1) * 70, rotateX: i < 3 ? -50 : 50, opacity: 0, scale: 0.7 });
+        const from = (i) => (mobile
+          ? { z: -900 - (i % 2) * 250, x: (i % 2 ? 1 : -1) * 240, y: (i < 2 ? -1 : i < 4 ? 0 : 1) * 320, rotateY: (i % 2 ? 1 : -1) * 60, rotateX: i < 2 ? -45 : i < 4 ? 0 : 45, opacity: 0, scale: 0.7 }
+          : { z: -1400 - (i % 3) * 300, x: (i % 3 - 1) * 520, y: i < 3 ? -380 : 380, rotateY: (i % 3 - 1) * 70, rotateX: i < 3 ? -50 : 50, opacity: 0, scale: 0.7 });
+        const setLit = (idx) => {
+          cards.forEach((c, i) => c.classList.toggle('is-lit', i === idx));
+          spots.forEach((c, i) => c.classList.toggle('is-on', i === idx));
+        };
+        if (mobile) setLit(0);
         const tl = gsap.timeline({
           defaults: { ease: 'none' },
-          scrollTrigger: { trigger: pin, start: 'top top', end: () => `+=${window.innerHeight * 3}`, pin: true, scrub: 0.8, anticipatePin: 1, invalidateOnRefresh: true,
+          scrollTrigger: { trigger: pin, start: 'top top', end: () => `+=${window.innerHeight * LEN}`, pin: true, scrub: 0.8, anticipatePin: 1, invalidateOnRefresh: true,
             onUpdate: (self) => {
               const k = clamp01((self.progress - 0.5) / 0.5);
-              cards.forEach((c, i) => c.classList.toggle('is-lit', k > 0 && Math.min(5, Math.floor(k * 6)) === i));
+              // phones always spotlight a reason (the first from the start); desktop lights them one by one
+              setLit(k > 0 ? Math.min(5, Math.floor(k * 6)) : (mobile ? 0 : -1));
             } },
         });
         cards.forEach((c, i) => {
           tl.fromTo(c, from(i), { z: 0, x: 0, y: 0, rotateY: 0, rotateX: 0, opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out' }, i * 0.14);
         });
-        tl.fromTo(board, { rotateY: -14, rotateX: 8 }, { rotateY: 14, rotateX: -4, duration: 2.2 }, 0.9)
+        tl.fromTo(board, { rotateY: mobile ? -8 : -14, rotateX: mobile ? 6 : 8 }, { rotateY: mobile ? 8 : 14, rotateX: mobile ? -3 : -4, duration: 2.2 }, 0.9)
           .to(board, { rotateY: 0, rotateX: 0, duration: 0.9, ease: 'power2.inOut' }, 3.1);
         tl.to({}, { duration: 0.6 });
-        gsap.to('.why__ghost', { xPercent: -30, ease: 'none', scrollTrigger: { trigger: pin, start: 'top top', end: () => `+=${window.innerHeight * 3}`, scrub: true } });
-      });
-      mm.add('(max-width: 899px)', () => {
-        cards.forEach((c) => gsap.fromTo(c, { rotateX: 40, y: 60, opacity: 0, transformPerspective: 800 }, { rotateX: 0, y: 0, opacity: 1, ease: 'none',
-          scrollTrigger: { trigger: c, start: 'top 95%', end: 'top 65%', scrub: true } }));
-      });
+        gsap.to('.why__ghost', { xPercent: -30, ease: 'none', scrollTrigger: { trigger: pin, start: 'top top', end: () => `+=${window.innerHeight * LEN}`, scrub: true } });
+      };
+      mm.add('(min-width: 900px)', () => build(false));
+      mm.add('(max-width: 899px)', () => build(true));
     }, root);
     return () => { mm.revert(); ctx.revert(); };
   }, []);
@@ -70,6 +79,12 @@ export default function Why() {
                 <p>{d}</p>
                 <i className="wcard__sweep" aria-hidden="true" />
               </article>
+            ))}
+          </div>
+          {/* phones only: the reason currently lit on the board is explained here */}
+          <div className="wspots" aria-hidden="true">
+            {WHY.items.map(([t, d]) => (
+              <div className="wspot" key={t}><h3>{t}</h3><p>{d}</p></div>
             ))}
           </div>
         </div>

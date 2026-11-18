@@ -116,10 +116,10 @@
   .ab-fls { display: none; }
 
   .ab-grid2 {
-    grid-template-rows: 32% minmax(0, 1fr);
-    height: calc(100vh - var(--nav-h) - 5rem);
-    height: calc(100svh - var(--nav-h) - 5rem);
-    gap: .4rem;
+    grid-template-rows: 28% minmax(0, 1fr);
+    height: calc(100vh - var(--nav-h) - 4rem);
+    height: calc(100svh - var(--nav-h) - 4rem);
+    gap: .3rem;
   }
   .ab-3d { min-height: 0; overflow: visible; }
   .ab-3d__k { transform: scale(.42); }
@@ -139,10 +139,10 @@
   .ab-list li { font-size: clamp(.8rem, 1.95svh, .92rem); line-height: 1.4; gap: .55rem; }
   .ab-list svg { width: 17px; height: 17px; margin-top: 1px; }
   .ab-steps, .ab-pillars { gap: .55rem; margin-top: .9rem; }
-  .ab-steps li { padding: .65rem .85rem; gap: .75rem; }
-  .ab-steps span, .ab-pillars span { font-size: clamp(.78rem, 1.9svh, .88rem); line-height: 1.4; }
+  .ab-steps li { padding: .55rem .85rem; gap: .75rem; }
+  .ab-steps span, .ab-pillars span { font-size: clamp(.76rem, 1.8svh, .86rem); line-height: 1.38; }
   .ab-steps strong { font-size: .92rem; }
-  .ab-pillars li { padding: .65rem .85rem .65rem 1.05rem; }
+  .ab-pillars li { padding: .5rem .85rem .5rem 1.05rem; }
   .ab-pillars strong { margin-bottom: .25rem; font-size: .68rem; }
   .ab-tags { gap: .4rem; margin-top: .9rem; }
   .ab-tag { font-size: .72rem; padding: .48rem .75rem; }
@@ -159,7 +159,7 @@
   /* bottom band: progress on the left, the floating buttons own the right */
   .ab .ab-prog {
     left: 0; right: 0; margin: 0; width: auto; max-width: none;
-    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     height: 42px; gap: .8rem;
     padding-left: var(--gut); padding-right: 108px;
   }
@@ -169,7 +169,7 @@
 
 /* short phones: tighten */
 @media (max-width: 899px) and (max-height: 700px) {
-  .ab-grid2 { grid-template-rows: 27% minmax(0, 1fr); }
+  .ab-grid2 { grid-template-rows: 24% minmax(0, 1fr); }
   .ab-3d__k { transform: scale(.36); }
   .ab-steps li, .ab-pillars li { padding: .5rem .75rem; }
 }

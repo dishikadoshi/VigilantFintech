@@ -42,7 +42,8 @@ export default function Industries() {
     const mm = gsap.matchMedia();
     const ctx = gsap.context(() => {
       drawAll();
-      mm.add('(min-width: 900px)', () => {
+      // Same pinned horizontal film strip on desktop AND phones (sizes differ in CSS only).
+      mm.add('(min-width: 1px)', () => {
         const track = el.querySelector('.itrack');
         const pin = el.querySelector('.ind__pin');
         const panels = gsap.utils.toArray('.ipan', el);
@@ -67,13 +68,6 @@ export default function Industries() {
           gsap.fromTo(p.querySelector('.ipan__media'), { x: 50 }, { x: -50, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true } });
           gsap.fromTo(p.querySelector('.ipan__ghost'), { x: 120 }, { x: -120, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true } });
           gsap.fromTo(p, { scale: 0.92, rotateY: 14, transformPerspective: 1400 }, { scale: 1, rotateY: 0, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: tween, start: 'left 95%', end: 'left 40%', scrub: true } });
-        });
-      });
-      mm.add('(max-width: 899px)', () => {
-        gsap.utils.toArray('.ipan', el).forEach((p) => {
-          gsap.to(p.querySelectorAll('.dr'), { strokeDashoffset: 0, stagger: 0.1, duration: 1.4, ease: 'power2.out', scrollTrigger: { trigger: p, start: 'top 80%', once: true } });
-          gsap.to(p.querySelectorAll('.pop'), { scale: 1, stagger: 0.1, duration: 0.6, ease: 'back.out(3)', scrollTrigger: { trigger: p, start: 'top 75%', once: true } });
-          gsap.from(p, { y: 60, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: p, start: 'top 90%', once: true } });
         });
       });
     }, root);

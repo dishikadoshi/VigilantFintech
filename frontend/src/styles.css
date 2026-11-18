@@ -1184,7 +1184,7 @@ select option { color: var(--navy-d); }
 
 /* ═══ v4.6 · mobile only: tidy bottom dock for the floating buttons (desktop untouched) ═══ */
 @media (max-width: 899px) {
-  .fabs { flex-direction: row-reverse; gap: 10px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
+  .fabs { flex-direction: row-reverse; gap: 10px; right: 14px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
   .fab { width: 42px; height: 42px; }
   .fab svg { width: 21px; height: 21px; }
 }
@@ -1227,3 +1227,68 @@ select option { color: var(--navy-d); }
 /* short phones: the intro paragraph gives way to the cards */
 @media (max-width: 999px) and (max-height: 800px) { .svc__left .lead { display: none; } }
 @media (max-width: 999px) and (max-height: 640px) { .svc .dcard__d { display: none; } }
+
+/* ═══ v4.8 · How it works on phones: pinned stage, 3D plate stack on top, stepper + active step below ═══ */
+@media (max-width: 899px) {
+  .how__pin { height: 100vh; height: 100svh; min-height: 0; display: flex; align-items: stretch;
+    padding: calc(var(--nav-h) + 10px) 0 calc(62px + env(safe-area-inset-bottom, 0px)); }
+  .how .how__in { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; gap: .6rem; }
+  .how__left { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .how .h2 { font-size: clamp(1.4rem, 3.9svh, 1.8rem); }
+  .how__left .eyebrow { margin-bottom: .5rem; }
+  .how__left .lead { margin-top: .5rem; font-size: clamp(.76rem, 1.8svh, .86rem); line-height: 1.5; max-width: none; }
+
+  /* plate stack (same 3D fan as desktop, smaller, centred) */
+  .how .hstack { display: block; flex: 1 1 auto; height: auto; min-height: 150px; max-height: 260px; margin-top: .3rem; }
+  .how .hstack .hplate { width: 70%; height: clamp(70px, 11svh, 92px); margin: calc(clamp(70px, 11svh, 92px) / -2) 0 0 -35%; padding: .55rem .85rem; border-radius: 14px; }
+  .how .hstack .hplate small { font-size: .55rem; }
+  .how .hstack .hplate b { font-size: .98rem; }
+  .how .hstack .hplate.is-on { translate: 0 0 16px; }
+
+  /* stepper: five nodes on a line that fills with scroll; the active step's text sits below */
+  .how .hsteps { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: auto auto; row-gap: .8rem; margin: 0; flex: none; }
+  .how .hsteps__spine { left: 10%; right: 10%; top: 16px; bottom: auto; width: auto; height: 2px; background: rgba(255, 255, 255, .16); }
+  .how .hsteps__fill { display: block; transform-origin: 0 50%; background: linear-gradient(90deg, var(--teal), #6fe7d6); }
+  .how .hstep { display: contents; opacity: 1; }
+  .how .hstep__node { grid-row: 1; justify-self: center; flex: none; width: 34px; height: 34px; font-size: .78rem; }
+  .how .hstep:nth-of-type(1) .hstep__node { grid-column: 1; }
+  .how .hstep:nth-of-type(2) .hstep__node { grid-column: 2; }
+  .how .hstep:nth-of-type(3) .hstep__node { grid-column: 3; }
+  .how .hstep:nth-of-type(4) .hstep__node { grid-column: 4; }
+  .how .hstep:nth-of-type(5) .hstep__node { grid-column: 5; }
+  .how .hstep.is-on .hstep__node { box-shadow: 0 0 0 6px rgba(37, 195, 173, .2), 0 0 24px rgba(37, 195, 173, .6); }
+  .how .hstep > div { grid-row: 2; grid-column: 1 / -1; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .35s var(--ease), transform .35s var(--ease);
+    padding: .8rem .95rem; border-radius: 16px; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .14); }
+  .how .hstep.is-on > div { opacity: 1; transform: none; }
+  .how .hstep h3 { font-size: 1rem; padding-top: 0; margin-bottom: .3rem; }
+  .how .hstep p { font-size: clamp(.76rem, 1.8svh, .86rem); line-height: 1.45; max-width: none; }
+}
+@media (max-width: 899px) and (max-height: 760px) { .how__left .lead { display: none; } }
+
+/* ═══ v4.8 · Industries on phones: same pinned horizontal film strip as desktop ═══ */
+@media (max-width: 899px) {
+  .ind .ind__pin { position: relative; height: 100vh; height: 100svh; min-height: 0; justify-content: flex-start; gap: .7rem;
+    padding: calc(var(--nav-h) + 10px) 0 calc(64px + env(safe-area-inset-bottom, 0px)); }
+  .ind .ind__head { flex-direction: column; align-items: flex-start; gap: .5rem; }
+  .ind .ind__head .h2 { font-size: clamp(1.35rem, 3.7svh, 1.7rem); max-width: none; }
+  .ind .ind__head .lead { margin: 0; max-width: none; font-size: clamp(.76rem, 1.8svh, .86rem); line-height: 1.5; }
+
+  .ind .itrack { flex-direction: row; flex: 1 1 0; min-height: 0; max-height: 560px; width: max-content; gap: 1rem; padding: 0 var(--gut); }
+  .ind .ipan { flex: 0 0 min(84vw, 420px); height: auto; grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); border-radius: 22px; }
+  .ind .ipan__txt { gap: .5rem; padding: 1rem 1rem .6rem; justify-content: flex-start; }
+  .ind .ipan__txt h3 { min-height: 0; font-size: clamp(1.1rem, 3svh, 1.35rem); max-width: none; display: block; }
+  .ind .ipan__txt p { min-height: 0; font-size: clamp(.74rem, 1.75svh, .84rem); line-height: 1.45; }
+  .ind .ipan__txt ul { grid-template-columns: 1fr 1fr; gap: .4rem .7rem; margin-top: .2rem; padding-top: .6rem; }
+  .ind .ipan__txt li { padding-left: 1.35rem; font-size: clamp(.64rem, 1.55svh, .72rem); line-height: 1.3; }
+  .ind .ipan__txt li::before { width: 14px; height: 14px; background-size: 9px; }
+  .ind .ipan__art { height: auto; min-height: 70px; margin: 0 10px 10px; border-radius: 16px; }
+  .ind .ipan__media svg { height: 100%; width: auto; max-width: 100%; }
+  .ind .ipan__disc { width: auto; height: 100%; }
+  .ind .ipan__badge { font-size: 1.1rem; left: .8rem; bottom: .6rem; }
+  .ind .ipan__ghost { font-size: 8rem; bottom: -2rem; }
+
+  /* counter + progress bar bottom-left, "01 / 07 ─────", clear of the floating buttons */
+  .ind .ind__foot { display: flex; position: absolute; left: 0; right: 0; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); height: 42px; gap: .8rem; padding-left: var(--gut); padding-right: 108px; }
+  .ind .ind__hint { display: none; }
+}
+@media (max-width: 899px) and (max-height: 800px) { .ind .ind__head .lead { display: none; } }

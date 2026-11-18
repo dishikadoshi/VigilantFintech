@@ -1344,12 +1344,17 @@ select option { color: var(--navy-d); }
 @media (max-width: 899px) {
   .scene { height: 100vh; height: 100lvh; bottom: auto; }
   .fc__m { display: block; }
-  .fc__pts { list-style: none; margin: 1.1rem 0 0; padding: 0; display: grid; gap: .55rem; max-width: 360px; }
-  .fc__pts li { display: flex; align-items: center; gap: .75rem; padding: .62rem .9rem; border-radius: 14px;
-    font: 600 .88rem var(--f-display); letter-spacing: -.01em; color: #fff;
-    background: linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.04)); border: 1px solid rgba(255,255,255,.14); }
-  .fc__pts i { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(44,201,180,.2); }
-  .fc__pts svg { width: 13px; height: 13px; fill: none; stroke: var(--teal); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .fc__pts { list-style: none; width: 100%; margin: 1.2rem 0 0; padding: .35rem; max-width: 420px; border-radius: 20px;
+    background: linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.15);
+    box-shadow: 0 18px 40px -22px rgba(0,0,0,.6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .fc__pts li { display: flex; align-items: center; gap: .85rem; padding: .7rem .75rem; }
+  .fc__pts li + li { border-top: 1px solid rgba(255,255,255,.1); }
+  .fc__pts i { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px;
+    background: linear-gradient(145deg, rgba(44,201,180,.32), rgba(44,201,180,.08)); box-shadow: inset 0 0 0 1px rgba(44,201,180,.4); }
+  .fc__pts svg { width: 20px; height: 20px; fill: none; stroke: #7be8d8; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .fc__pts div { display: grid; gap: .12rem; min-width: 0; }
+  .fc__pts b { font: 700 .95rem var(--f-display); letter-spacing: -.015em; color: #fff; }
+  .fc__pts span { font-size: .74rem; line-height: 1.3; color: rgba(226,238,242,.66); }
   .fc__pills { list-style: none; margin: 1.1rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; max-width: 400px; }
   .fc__pills li { display: flex; align-items: center; gap: .6rem; padding: .6rem .75rem; border-radius: 12px; min-width: 0;
     font: 600 .74rem/1.2 var(--f-display); color: #e6f6f3;

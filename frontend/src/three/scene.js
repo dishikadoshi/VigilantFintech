@@ -225,7 +225,7 @@ export function createScene(canvas) {
     const coreS = lerp(0.36, 1.0, smooth(0.04, 0.5, p)) * (1 - smooth(0.88, 1, p) * 0.45);
     // slide 1 keeps the globe centred; from slide 2 on it drops lower so the top-centre text sits above it
     // phones: raise the globe toward the middle of the screen once a slide has less text above it
-    const mobShift = [-2.4, -1.0, -1.45, -1.7, -1.5][Math.min(4, Math.floor(p * 5 + 0.0001))];
+    const mobShift = [-2.4, -1.0, -1.9, -1.7, -1.5][Math.min(4, Math.floor(p * 5 + 0.0001))];
     const shiftY = desktop ? lerp(-0.25, -1.75, smooth(0.04, 0.3, p)) : mobShift;
     const camZ = lerp(13.4, 12.2, smooth(0.04, 0.5, p)) + smooth(0.84, 1, p) * 1.2;
     const k = reduced ? 20 : 6;

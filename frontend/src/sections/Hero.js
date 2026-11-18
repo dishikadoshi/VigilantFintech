@@ -8,6 +8,13 @@ import { SERVICES } from '../content/services';
 
 const CHAPTERS = 5;
 
+// mobile-only highlights for the "Meet the team" slide: [title, one-line note, icon paths]
+const PTS = [
+  [WHY.items[0][0], 'Multiple skills, one team', <><circle cx="9" cy="8" r="3.2" /><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" /><path d="M16 5.2a3.2 3.2 0 0 1 0 5.6M18 14c2 .6 3.4 2.3 3.4 5" /></>],
+  [WHY.items[2][0], 'Scales with your workload', <><path d="M4 7h9M17 7h3M4 17h3M11 17h9" /><circle cx="15" cy="7" r="2" /><circle cx="9" cy="17" r="2" /></>],
+  [WHY.items[4][0], 'Clear, regular updates', <><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20.5l1.4-4.6A8 8 0 1 1 21 12z" /><path d="M8.5 11h7M8.5 14h4" /></>]
+];
+
 /** The pinned 3D scroll film. Five captioned chapters scrubbed against the WebGL scene. */
 export default function Hero() {
   const root = useRef(null);
@@ -107,10 +114,10 @@ export default function Hero() {
             <p className="eyebrow fc__fade"><i />Meet the team</p>
             <h2 className="hh" data-fsplit style={{ visibility: 'hidden' }}>More Than Virtual Assistance. A Complete Business Support Team.</h2>
             <ul className="fc__m fc__pts fc__fade">
-              {[WHY.items[0], WHY.items[2], WHY.items[4]].map(([t]) => (
+              {PTS.map(([t, d, icon]) => (
                 <li key={t}>
-                  <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></i>
-                  {t}
+                  <i><svg viewBox="0 0 24 24" aria-hidden="true">{icon}</svg></i>
+                  <div><b>{t}</b><span>{d}</span></div>
                 </li>
               ))}
             </ul>

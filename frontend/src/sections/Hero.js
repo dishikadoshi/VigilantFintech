@@ -3,7 +3,8 @@ import { gsap, ScrollTrigger, REDUCED } from '../lib/smooth';
 import { splitTextNodes } from '../lib/motion';
 import { sceneState } from '../three/sceneState';
 import { Button, ConsultButton } from '../components/ui';
-import { HERO } from '../content/copy';
+import { HERO, TRUST, WHY } from '../content/copy';
+import { SERVICES } from '../content/services';
 
 const CHAPTERS = 5;
 
@@ -98,6 +99,7 @@ export default function Hero() {
             <p className="eyebrow fc__fade"><i />Sound familiar?</p>
             <h2 className="hh" data-fsplit style={{ visibility: 'hidden' }}>Running a business requires time, attention and the right people.</h2>
             <p className="lead fc__fade">Managing everything yourself can slow down your growth.</p>
+            <p className="fc__m fc__para fc__fade">{TRUST.paragraphs[1]}</p>
           </div>
         </div>
 
@@ -105,6 +107,11 @@ export default function Hero() {
           <div className="container fc__in fc__in--center">
             <p className="eyebrow fc__fade"><i />Meet the team</p>
             <h2 className="hh" data-fsplit style={{ visibility: 'hidden' }}>More Than Virtual Assistance. A Complete Business Support Team.</h2>
+            <ul className="fc__m fc__pts fc__fade">
+              {[WHY.items[0], WHY.items[2], WHY.items[4]].map(([t, d]) => (
+                <li key={t}><b>{t}</b><span>{d}</span></li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -112,6 +119,9 @@ export default function Hero() {
           <div className="container fc__in fc__in--center">
             <p className="eyebrow fc__fade"><i />One company</p>
             <h2 className="hh" data-fsplit style={{ visibility: 'hidden' }}>One team. Multiple skills. Endless possibilities.</h2>
+            <ul className="fc__m fc__pills fc__fade">
+              {SERVICES.map((s) => <li key={s.slug}>{s.short}</li>)}
+            </ul>
           </div>
         </div>
 
@@ -123,6 +133,7 @@ export default function Hero() {
               <Button to="#services">Explore Our Services</Button>
               <ConsultButton variant="ghost">Book a Free Consultation</ConsultButton>
             </div>
+            <p className="fc__m fc__note fc__fade">Free and no-obligation consultation</p>
           </div>
         </div>
 

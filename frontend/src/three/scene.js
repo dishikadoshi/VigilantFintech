@@ -180,9 +180,15 @@ export function createScene(canvas) {
 
   // ── sizing ────────────────────────────────────────────────
   let W = 1, H = 1;
+  // On phones the browser bar slides away while scrolling, which changes innerHeight and used to
+  // rescale/jump the globe. Size against the large viewport (100lvh) so the canvas never changes.
+  const lvhProbe = document.createElement('div');
+  lvhProbe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100lvh;visibility:hidden;pointer-events:none';
+  document.body.appendChild(lvhProbe);
   const resize = () => {
-    W = window.innerWidth; H = window.innerHeight;
     isMobile = mobileQ.matches;
+    W = window.innerWidth;
+    H = (isMobile && lvhProbe.offsetHeight) || window.innerHeight;
     renderer.setSize(W, H, false);
     camera.aspect = W / H; camera.updateProjectionMatrix();
     const aspect = W / H;
@@ -322,6 +328,7 @@ export function createScene(canvas) {
     running = false;
     gsap.ticker.remove(tick);
     window.removeEventListener('resize', resize);
+    lvhProbe.remove();
     window.removeEventListener('pointermove', onMouse);
     cards.forEach((c) => { c.tex.dispose(); c.mat.dispose(); });
     dustGeo.dispose(); dustMat.dispose(); tagGeo.dispose(); 

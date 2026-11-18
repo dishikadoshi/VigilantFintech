@@ -16,7 +16,7 @@ const DIAL = 2 * Math.PI * 52;
 /**
  * Pinned deck. Left: a service "odometer" (digits and names roll like a dial) with a
  * circular progress gauge. Right: a stack of slim cards that tip forward and fly away.
- * Stacks vertically on phones.
+ * Phones get the exact same animation: header + odometer on top, the card stack below.
  */
 export default function Services() {
   const root = useRef(null);
@@ -26,7 +26,8 @@ export default function Services() {
     if (REDUCED) return undefined;
     const mm = gsap.matchMedia();
     const ctx = gsap.context(() => {
-      mm.add('(min-width: 1000px)', () => {
+      // Same pinned, scrubbed deck on desktop AND phones (layout differs in CSS only).
+      mm.add('(min-width: 1px)', () => {
         const el = root.current;
         const pin = el.querySelector('.svc__pin');
         const cards = gsap.utils.toArray('.dcard', el);

@@ -104,11 +104,11 @@
 .ab-quote + .ab-p { margin-top: 1rem; }
 
 /* ═══════════════════════════════════════════════════════════════
-   Mobile only (≤899px): clean bottom area for the pinned About stage.
-   - stage uses the *visible* viewport height (svh) so nothing hides under the browser bar
-   - 3D object gets less room, text gets more, spacing/type scale with screen height
-   - progress bar sits in its own band at the bottom-left; floating buttons sit bottom-right
-   - decorative floating icons are hidden so they never cut through text
+   Mobile only (≤899px): pinned About stage, balanced top to bottom.
+   - stage uses the *visible* viewport height (svh)
+   - 3D object lives in its own band at the top and is scaled to stay inside it
+   - the text band fills the rest; each slide is centred in it (no big empty gap)
+   - progress bar bottom-left, floating buttons bottom-right
    Desktop rules above are not touched.
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 899px) {
@@ -116,36 +116,42 @@
   .ab-fls { display: none; }
 
   .ab-grid2 {
-    grid-template-rows: 27% 1fr;
-    height: calc(100vh - var(--nav-h) - 5.4rem);
-    height: calc(100svh - var(--nav-h) - 5.4rem);
+    grid-template-rows: 32% minmax(0, 1fr);
+    height: calc(100vh - var(--nav-h) - 5rem);
+    height: calc(100svh - var(--nav-h) - 5rem);
+    gap: .4rem;
   }
-  .ab-3d__k { transform: scale(.5); }
+  .ab-3d { min-height: 0; overflow: visible; }
+  .ab-3d__k { transform: scale(.42); }
   .ab-ground { display: none; }
 
-  /* type + spacing scale with screen height so every slide fits above the progress band */
-  .ab-s .eyebrow { margin-bottom: .55rem; }
-  .ab-h1 { font-size: clamp(1.45rem, 3.6svh, 1.9rem); line-height: 1.1; }
-  .ab-h2 { font-size: clamp(1.3rem, 3.2svh, 1.7rem); margin-bottom: .55rem; }
-  .ab-h2--v { font-size: clamp(1.5rem, 3.6svh, 2rem); }
-  .ab-p, .ab-p--lead { font-size: clamp(.8rem, 1.85svh, .92rem); line-height: 1.55; margin-top: 0; }
-  .ab-list { gap: .4rem; margin-top: .7rem; }
-  .ab-list li { font-size: clamp(.78rem, 1.8svh, .88rem); line-height: 1.4; gap: .5rem; }
-  .ab-list svg { width: 16px; height: 16px; margin-top: 1px; }
-  .ab-steps, .ab-pillars { gap: .5rem; margin-top: .8rem; }
-  .ab-steps li { padding: .55rem .8rem; gap: .7rem; }
-  .ab-steps span, .ab-pillars span { font-size: clamp(.76rem, 1.75svh, .85rem); line-height: 1.4; }
-  .ab-steps strong { font-size: .88rem; }
-  .ab-pillars li { padding: .55rem .8rem .55rem 1rem; }
-  .ab-pillars strong { margin-bottom: .2rem; font-size: .66rem; }
-  .ab-tags { gap: .35rem; margin-top: .8rem; }
-  .ab-tag { font-size: .7rem; padding: .45rem .7rem; }
-  .ab-note { margin-top: .7rem; font-size: .8rem; }
-  .ab-sub { margin-top: .8rem; }
-  .ab-dots { margin-top: .9rem; }
-  .ab-quote { font-size: clamp(1.15rem, 2.9svh, 1.5rem); max-width: none; }
-  .ab-quote + .ab-p { margin-top: .6rem; }
-  .ab-cta { margin-top: 1rem; }
+  /* text band: one grid cell that fills the band, slides centred inside it */
+  .ab-slides { align-self: stretch; grid-template-rows: minmax(0, 1fr); max-width: none; }
+  .ab-s { align-self: center; align-self: safe center; }
+
+  /* type + spacing scale with screen height */
+  .ab-s .eyebrow { margin-bottom: .6rem; }
+  .ab-h1 { font-size: clamp(1.5rem, 4.1svh, 2rem); line-height: 1.1; }
+  .ab-h2 { font-size: clamp(1.4rem, 3.7svh, 1.85rem); margin-bottom: .6rem; }
+  .ab-h2--v { font-size: clamp(1.6rem, 4.2svh, 2.1rem); }
+  .ab-p, .ab-p--lead { font-size: clamp(.82rem, 2.05svh, .96rem); line-height: 1.55; margin-top: 0; }
+  .ab-list { gap: .5rem; margin-top: .8rem; }
+  .ab-list li { font-size: clamp(.8rem, 1.95svh, .92rem); line-height: 1.4; gap: .55rem; }
+  .ab-list svg { width: 17px; height: 17px; margin-top: 1px; }
+  .ab-steps, .ab-pillars { gap: .55rem; margin-top: .9rem; }
+  .ab-steps li { padding: .65rem .85rem; gap: .75rem; }
+  .ab-steps span, .ab-pillars span { font-size: clamp(.78rem, 1.9svh, .88rem); line-height: 1.4; }
+  .ab-steps strong { font-size: .92rem; }
+  .ab-pillars li { padding: .65rem .85rem .65rem 1.05rem; }
+  .ab-pillars strong { margin-bottom: .25rem; font-size: .68rem; }
+  .ab-tags { gap: .4rem; margin-top: .9rem; }
+  .ab-tag { font-size: .72rem; padding: .48rem .75rem; }
+  .ab-note { margin-top: .8rem; font-size: .82rem; }
+  .ab-sub { margin-top: .9rem; }
+  .ab-dots { margin-top: 1rem; }
+  .ab-quote { font-size: clamp(1.2rem, 3.1svh, 1.6rem); max-width: none; }
+  .ab-quote + .ab-p { margin-top: .7rem; }
+  .ab-cta { margin-top: 1.1rem; }
 
   /* the three tags under slide 1 repeat the bullet points above; drop them on phones */
   .ab-s:first-child .ab-tags { display: none; }
@@ -161,10 +167,12 @@
   .ab-prog__n b { font-size: 1.2rem; }
 }
 
-/* very short phones: tighten a little more */
-@media (max-width: 899px) and (max-height: 680px) {
-  .ab-grid2 { grid-template-rows: 22% 1fr; }
-  .ab-3d__k { transform: scale(.4); }
-  .ab-steps li, .ab-pillars li { padding: .45rem .7rem; }
+/* short phones: tighten */
+@media (max-width: 899px) and (max-height: 700px) {
+  .ab-grid2 { grid-template-rows: 27% minmax(0, 1fr); }
+  .ab-3d__k { transform: scale(.36); }
+  .ab-steps li, .ab-pillars li { padding: .5rem .75rem; }
+}
+@media (max-width: 899px) and (max-height: 620px) {
   .ab-list li:nth-child(n+3) { display: none; }
 }

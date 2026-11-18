@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { Link } from '../lib/router';
 import { gsap, REDUCED, scrollToTop } from '../lib/smooth';
 import Logo from './Logo';
-import { Button } from './ui';
+import { Button, WhatsAppLabel } from './ui';
 import { SITE, whatsappHref, NAV, CONSULT_TO } from '../config/site';
 import { SERVICES } from '../content/services';
 import { FOOTER } from '../content/copy';
@@ -92,7 +92,7 @@ export default function Footer() {
           </h2>
           <div className="foot__actions">
             <Button to={SITE.booking || CONSULT_TO} variant="teal">Book a Free Consultation</Button>
-            {wa && <Button to={wa} variant="ghost">Chat on WhatsApp</Button>}
+            {wa && <Button to={wa} variant="ghost"><WhatsAppLabel /></Button>}
           </div>
         </div>
 

@@ -1167,3 +1167,24 @@ html.no-webgl .film{ background:radial-gradient(60% 75% at 62% 48%,#0e3a63,#0413
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+/* ═══ v4.6 · cursor over form fields: use the native I-beam / pointer instead of the custom caret ═══ */
+.has-cursor input, .has-cursor textarea { cursor: text !important; }
+.has-cursor select, .has-cursor select * { cursor: pointer !important; }
+.cur.is-text { opacity: 0 !important; }           /* custom dot + ring vanish over inputs, textarea, select */
+
+/* placeholder hints */
+input::placeholder, textarea::placeholder { color: rgba(16, 48, 90, .42); font-weight: 400; opacity: 1; }
+select:invalid { color: rgba(16, 48, 90, .55); }  /* "Select…" placeholder look until a choice is made */
+select option { color: var(--navy-d); }
+
+/* WhatsApp logo inside every "Chat on WhatsApp" button */
+.wa-lbl { display: inline-flex; align-items: center; gap: .55rem; }
+.wa-ico { flex: none; width: 20px; height: 20px; color: #25d366; }
+
+/* ═══ v4.6 · mobile only: tidy bottom dock for the floating buttons (desktop untouched) ═══ */
+@media (max-width: 899px) {
+  .fabs { flex-direction: row-reverse; gap: 10px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
+  .fab { width: 42px; height: 42px; }
+  .fab svg { width: 21px; height: 21px; }
+}

@@ -357,6 +357,27 @@ export default function Contact() {
 
     const isOther = svc === OTHER;
 
+    // Every field is mandatory (the browser also blocks empty fields via `required`).
+    const missing = [
+      !f.name.trim() && 'full name',
+      !f.company.trim() && 'company',
+      !f.email.trim() && 'email',
+      !f.phone.trim() && 'phone / WhatsApp number',
+      !svc && 'the service you need',
+      !f.workload && 'your estimated workload',
+      !f.message.trim() && 'your requirements'
+    ].filter(Boolean);
+
+    if (missing.length) {
+      setErr(`Please fill in all fields: ${missing.join(', ')}.`);
+      return;
+    }
+
+    if (f.phone.replace(/\D/g, '').length < 7) {
+      setErr('Please enter a valid phone / WhatsApp number (with country code).');
+      return;
+    }
+
     if (isOther && !other.trim()) {
       setErr('Please tell us what service you need.');
       return;
@@ -553,6 +574,7 @@ export default function Contact() {
                       <span>Full name *</span>
                       <input
                         required
+                        placeholder="e.g. Priya Sharma"
                         autoComplete="name"
                         value={f.name}
                         onChange={set('name')}
@@ -563,6 +585,7 @@ export default function Contact() {
                       <span>Company *</span>
                       <input
                         required
+                        placeholder="e.g. Acme Pvt. Ltd."
                         autoComplete="organization"
                         value={f.company}
                         onChange={set('company')}
@@ -574,6 +597,7 @@ export default function Contact() {
                       <input
                         required
                         type="email"
+                        placeholder="you@company.com"
                         autoComplete="email"
                         value={f.email}
                         onChange={set('email')}
@@ -585,6 +609,8 @@ export default function Contact() {
                       <input
                         required
                         type="tel"
+                        inputMode="tel"
+                        placeholder="+91 98765 43210"
                         autoComplete="tel"
                         value={f.phone}
                         onChange={set('phone')}
@@ -593,9 +619,10 @@ export default function Contact() {
                   </div>
 
                   <label className="fld fld--wide">
-                    <span>Service you need</span>
+                    <span>Service you need *</span>
 
                     <select
+                      required
                       value={svc}
                       onChange={(e) => {
                         setSvc(e.target.value);
@@ -605,7 +632,7 @@ export default function Contact() {
                         }
                       }}
                     >
-                      <option value="">Select a service…</option>
+                      <option value="" disabled>Select a service…</option>
 
                       {FORM_SERVICES.map((l) => (
                         <option key={l} value={l}>{l}</option>
@@ -630,13 +657,14 @@ export default function Contact() {
                   )}
 
                   <label className="fld fld--wide">
-                    <span>Estimated workload</span>
+                    <span>Estimated workload *</span>
 
                     <select
+                      required
                       value={f.workload}
                       onChange={set('workload')}
                     >
-                      <option value="">Select…</option>
+                      <option value="" disabled>Select your workload…</option>
 
                       {CONTACT.workloads.map((w) => (
                         <option key={w}>{w}</option>
@@ -645,8 +673,10 @@ export default function Contact() {
                   </label>
 
                   <label className="fld fld--wide">
-                    <span>Tell us about your requirements</span>
+                    <span>Tell us about your requirements *</span>
                     <textarea
+                      required
+                      placeholder="e.g. I need help with inbox management, bookkeeping and customer replies, about 15 hours a week."
                       rows="3"
                       maxLength={1800}
                       value={f.message}

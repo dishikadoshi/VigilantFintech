@@ -1296,7 +1296,7 @@ select option { color: var(--navy-d); }
 /* ═══ v4.9 · Why choose us on phones: pinned stage, same fly-in + light sweep as desktop ═══ */
 .wspots { display: none; }
 @media (max-width: 899px) {
-  .why__pin { height: 100vh; min-height: 0; justify-content: flex-start; gap: .6rem; overflow: hidden;
+  .why__pin { height: 100vh; height: 100svh; min-height: 0; justify-content: flex-start; gap: .6rem; overflow: hidden;
     padding: calc(var(--nav-h) + 10px) 0 calc(62px + env(safe-area-inset-bottom, 0px)); }
   .why__ghost { font-size: 9rem; }
   .why .shead { margin-bottom: 0; }
@@ -1304,8 +1304,8 @@ select option { color: var(--navy-d); }
   .why .shead .eyebrow { margin-bottom: .5rem; }
 
   /* six compact tiles, two across */
-  .wboard { grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 0; }
-  .wcard { min-height: 0; padding: .75rem .8rem; border-radius: 16px; }
+  .wboard { grid-template-columns: 1fr 1fr; gap: clamp(.6rem, 1.5svh, .9rem); margin-top: 0; }
+  .wcard { min-height: 0; padding: clamp(.75rem, 1.8svh, 1rem) .85rem; border-radius: 16px; }
   .wcard p { display: none; }
   .wcard__ic { width: 24px; height: 24px; margin-bottom: clamp(.4rem, 1.4svh, .8rem); }
   .wcard h3 { margin: 0; font-size: clamp(.78rem, 2svh, .92rem); line-height: 1.2; }
@@ -1313,7 +1313,7 @@ select option { color: var(--navy-d); }
   .wcard.is-lit { box-shadow: 0 0 0 2px var(--teal), 0 18px 40px -18px rgba(37, 195, 173, .6); }
 
   /* spotlight: explains whichever tile is lit; the six panels share one grid cell and cross-fade */
-  .wspots { display: grid; margin-top: .7rem; }
+  .wspots { display: grid; margin-top: clamp(.7rem, 1.8svh, 1.1rem); }
   .wspot { grid-area: 1 / 1; opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .35s var(--ease), transform .35s var(--ease);
     padding: .85rem 1rem; border-radius: 16px; background: #fff; border: 1px solid rgba(16, 48, 90, .07); border-top: 3px solid var(--teal); box-shadow: 0 20px 40px -24px rgba(15, 42, 87, .45); }
   .wspot.is-on { opacity: 1; transform: none; }

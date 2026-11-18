@@ -116,12 +116,12 @@
   .ab-fls { display: none; }
 
   .ab-grid2 {
-    grid-template-rows: 24% minmax(0, 1fr);
+    grid-template-rows: 27% minmax(0, 1fr);
     height: calc(100vh - var(--nav-h) - 4.4rem);
     gap: .3rem;
   }
   .ab-3d { min-height: 0; overflow: visible; }
-  .ab-3d__k { transform: scale(.38); }
+  .ab-3d__k { --ks: .38; transform: scale(var(--ks)); } /* --ks is animated up while the dice is on screen (see About.js) */
   .ab-ground { display: none; }
 
   /* text band: one grid cell that fills the band, slides centred inside it */
@@ -168,8 +168,8 @@
 
 /* short phones: tighten */
 @media (max-width: 899px) and (max-height: 700px) {
-  .ab-grid2 { grid-template-rows: 21% minmax(0, 1fr); }
-  .ab-3d__k { transform: scale(.34); }
+  .ab-grid2 { grid-template-rows: 24% minmax(0, 1fr); }
+  .ab-3d__k { --ks: .34; }
   .ab-steps li, .ab-pillars li { padding: .5rem .75rem; }
 }
 @media (max-width: 899px) and (max-height: 620px) {

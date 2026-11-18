@@ -32,7 +32,7 @@ export default function Why() {
         const LEN = mobile ? 2.8 : 3;
         gsap.set(board, { transformPerspective: 1600, transformOrigin: '50% 60%' });
         const from = (i) => (mobile
-          ? { z: -900 - (i % 2) * 250, x: (i % 2 ? 1 : -1) * 240, y: (i < 2 ? -1 : i < 4 ? 0 : 1) * 320, rotateY: (i % 2 ? 1 : -1) * 60, rotateX: i < 2 ? -45 : i < 4 ? 0 : 45, opacity: 0, scale: 0.7 }
+          ? { z: -260 - (i % 2) * 80, x: (i % 2 ? 1 : -1) * 70, y: (i < 2 ? -1 : i < 4 ? 0 : 1) * 90, rotateY: (i % 2 ? 1 : -1) * 28, rotateX: i < 2 ? -18 : i < 4 ? 0 : 18, opacity: 0, scale: 0.85 }
           : { z: -1400 - (i % 3) * 300, x: (i % 3 - 1) * 520, y: i < 3 ? -380 : 380, rotateY: (i % 3 - 1) * 70, rotateX: i < 3 ? -50 : 50, opacity: 0, scale: 0.7 });
         const setLit = (idx) => {
           cards.forEach((c, i) => c.classList.toggle('is-lit', i === idx));
@@ -48,9 +48,16 @@ export default function Why() {
               setLit(k > 0 ? Math.min(5, Math.floor(k * 6)) : (mobile ? 0 : -1));
             } },
         });
-        cards.forEach((c, i) => {
-          tl.fromTo(c, from(i), { z: 0, x: 0, y: 0, rotateY: 0, rotateX: 0, opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out' }, i * 0.14);
-        });
+        const land = { z: 0, x: 0, y: 0, rotateY: 0, rotateX: 0, opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out' };
+        if (mobile) {
+          // phones: the tiles land while the section scrolls into view (before it pins), so the stage is never empty
+          const arrive = gsap.timeline({ defaults: { ease: 'none' },
+            scrollTrigger: { trigger: root.current, start: 'top 88%', end: 'top 12%', scrub: 0.6, invalidateOnRefresh: true } });
+          cards.forEach((c, i) => arrive.fromTo(c, from(i), land, i * 0.08));
+          arrive.fromTo('.wspots', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.45);
+        } else {
+          cards.forEach((c, i) => tl.fromTo(c, from(i), land, i * 0.14));
+        }
         tl.fromTo(board, { rotateY: mobile ? -8 : -14, rotateX: mobile ? 6 : 8 }, { rotateY: mobile ? 8 : 14, rotateX: mobile ? -3 : -4, duration: 2.2 }, 0.9)
           .to(board, { rotateY: 0, rotateX: 0, duration: 0.9, ease: 'power2.inOut' }, 3.1);
         tl.to({}, { duration: 0.6 });

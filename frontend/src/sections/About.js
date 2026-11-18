@@ -148,6 +148,14 @@ export default function About() {
       tl.to(tilt, { rotationX: -16, rotationY: -26, duration: 0.6, ease: 'power2.inOut' }, 4.75);
       for (let k = 1; k < 6; k++) tl.to(rig, { rotationX: CUBE_VIEW[k].rx, rotationY: CUBE_VIEW[k].ry, duration: 0.5, ease: 'power2.inOut' }, 5 + k - 0.25);
 
+      /* phones: the dice grows while it is the star of the show (values), then shrinks back for the other shapes */
+      const kEl = el.querySelector('.ab-3d__k');
+      if (kEl && window.matchMedia('(max-width: 899px)').matches) {
+        const base = parseFloat(getComputedStyle(kEl).getPropertyValue('--ks')) || 0.38;
+        tl.to(kEl, { '--ks': base * 1.55, duration: 0.6, ease: 'power2.inOut' }, 4.75);
+        tl.to(kEl, { '--ks': base, duration: 0.6, ease: 'power2.inOut' }, 10.75);
+      }
+
       /* 11 · BELIEF → the cube settles back into the stack: everything in place */
       apply((i) => SLAB(i, 12), 10.75, 0.6); rigTo({ rx: 62, ry: -1080, rz: -38, sc: 1.15, y: 20 }, 10.75, 0.6);
       tl.to(tilt, { rotationX: 0, rotationY: 0, duration: 0.6, ease: 'power2.inOut' }, 10.75);

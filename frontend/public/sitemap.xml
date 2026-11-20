@@ -1,26 +1,15 @@
 
-<?xml version="1.0" encoding="UTF-8"?>
-
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- Homepage -->
   <url>
     <loc>https://vigilantfintech.com/</loc>
   </url>
-
-  <!-- Privacy Policy -->
   <url>
     <loc>https://vigilantfintech.com/privacy-policy</loc>
   </url>
-
-  <!-- Terms and Conditions -->
   <url>
     <loc>https://vigilantfintech.com/terms-and-conditions</loc>
   </url>
-
-  <!-- Cookie Policy -->
   <url>
     <loc>https://vigilantfintech.com/cookie-policy</loc>
   </url>
-
 </urlset>
